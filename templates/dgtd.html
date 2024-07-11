@@ -1,0 +1,465 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+{% load static %} 
+<style>
+    .btn-default {
+        background-color: #fff;
+        color: #000;
+    }
+    .btn-selected {
+        background-color: #3490dc;
+        color: #000;
+    }
+    .btn-passed {
+        background-color: #f59e0b;
+        color: #000;
+    }
+</style>  
+<div class="">
+    <!--title-->
+    <div>
+    <div class="border-t border-gray-600 opacity-50 w-full"></div>
+    <div class="bg-gray-200 flex flex-col w-full h-24 items-center rounded-sm justify-center ">
+        <span class="font-bold text-2xl ">Môn thi: {{ DeThi.mon_thi }}</span>
+        <div class="flex flex-row justify-center items-center">
+
+        <button id="thoatButton" class="ml-3 inline-block bg-green-300 text-white rounded-lg py-1 px-3 hover:bg-green-600" value="Thoát">Thoát</button>
+        </div>
+    </div>
+    <div class="border-t border-gray-600 opacity-50 w-full"></div>
+</div>
+<div id="mainExamContent" class="bg-gray-200 flex flex-col h-full justify-between">
+    <br>
+    <div class="ml-12 flex flex-col justify-center h-1 text-2xl">
+        <span class="font-bold">{{ DeThi.ten_de_thi }}</span>
+    </div>
+    <br>
+
+    <!--main exam-->
+    <div class="flex flex-grow h-200 relative">
+
+        <!--main form-->
+        <div class="bg-white relative ml-12 mr-12 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+            <form id="answerForm" method="POST" action="{% url 'luyentap:chamthi' %}">
+                <input type="hidden" id="DeThiInput" name="DeThiInput">
+                <input type="hidden" id="thoiGianInput" name="thoiGianInput">
+                {% csrf_token %} 
+
+                {% for noi_dung_de, dapans in dictCHDA.items %}
+                    {% if noi_dung_de.cau_hoi.loai_cau_hoi == 'TN' %}
+                    <div id="tab{{noi_dung_de.thu_tu_cau}}" class="tab-content hidden items-start ">
+                        <div class="max-w-full flex-1">
+                            <div class="border-spacing-1 flex flex-row">
+                                <span class="font-bold ml-2 text-2xl"> Câu {{noi_dung_de.thu_tu_cau}}. {{noi_dung_de.cau_hoi.noi_dung}} </span>
+                            </div>
+                            <div class="flex flex-col">
+                                {% for dap_an in dapans %}
+                                    <label class="inline-flex items-center ml-6">
+                                        <input type="radio" class="form-radio h-8 w-8 text-blue-600" id="radio{{noi_dung_de.thu_tu_cau}}-{{dap_an.id}}" name="group{{noi_dung_de.thu_tu_cau}}" value="{{dap_an.id}}">
+                                        <span class="ml-2 text-2xl">{{dap_an.noi_dung}}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if noi_dung_de.cau_hoi.anh %}
+                        <div class="ml-4 flex-shrink-0">
+                            <img src="{{noi_dung_de.cau_hoi.anh.url}}" alt="Image" class="max-w-full max-2xl">
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'DS' %}
+                    <div id="tab{{noi_dung_de.thu_tu_cau}}" class="tab-content hidden items-start">
+                        <div class="max-w-full flex-1">
+                            <div class="border-spacing-1 flex flex-row">
+                                <span class="font-bold ml-2 text-2xl"> Câu {{noi_dung_de.thu_tu_cau}}. {{noi_dung_de.cau_hoi.noi_dung}} </span>
+                            </div>
+                            <div class="flex flex-col">
+                                {% comment %} <div class="flex flex-row">
+                                    <span class="ml-2 text-2xl w-96 center"> Đáp án </span>
+                                    <span class="ml-6">Đúng</span>
+                                    <span class="ml-8">Sai</span>
+                                </div> {% endcomment %}
+                                {% comment %} {% for dap_an in dapans %}
+                                    <label class="inline-flex items-center ml-6">
+                                        <div class="flex flex-row">
+                                            <span class="ml-2 text-2xl w-96"> {{dap_an.noi_dung}} </span>
+                                            <input class="ml-6" type="radio" name="group{{noi_dung_de.thu_tu_cau}}-{{dap_an.id}}" id="radio-{{noi_dung_de.thu_tu_cau}}-{{dap_an.id}}" value="True" >
+                                            <div class="w-14"></div>
+                                            <input type="radio" name="group{{noi_dung_de.thu_tu_cau}}-{{dap_an.id}}" id="radio-{{noi_dung_de.thu_tu_cau}}-{{dap_an.id}}" value="False" >
+                                        </div>
+                                    </label>
+                                {% endfor %} {% endcomment %}
+                                {% for dap_an in dapans %}
+                                    <label class="inline-flex items-center ml-6">
+                                        <input type="checkbox" class="form-checkbox h-8 w-8 text-blue-600" id="checkbox-{{noi_dung_de.thu_tu_cau}}-{{dap_an.id}}" name="group{{noi_dung_de.thu_tu_cau}}" value="{{dap_an.id}}">
+                                        <span class="ml-2 text-2xl"> {{dap_an.noi_dung}} </span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if noi_dung_de.cau_hoi.anh %}
+                        <div class="ml-4 flex-shrink-0">
+                            <img src="{{noi_dung_de.cau_hoi.anh.url}}" alt="Image" class="w-52 h-56">
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL' %}
+                    <div id="tab{{noi_dung_de.thu_tu_cau}}" class="hidden tab-content items-start">
+                        <div class="max-w-full flex-1">
+                            <div class="border-spacing-1 flex flex-row">
+                                <span class="font-bold ml-2 text-2xl"> Câu {{noi_dung_de.thu_tu_cau}}. {{noi_dung_de.cau_hoi.noi_dung}} </span>
+                            </div>
+                            {% if noi_dung_de.cau_hoi.anh %}
+                            <div class="ml-4 flex-shrink-0">
+                                <img src="{{noi_dung_de.cau_hoi.anh.url}}" alt="Image" class="w-52 h-56">
+                            </div>
+                            {% endif %}
+                        </div>
+                        <textarea id="inputTextArea{{noi_dung_de.thu_tu_cau}}" rows="2" name="group{{noi_dung_de.thu_tu_cau}}" class="py-4 w-64 px-3 border border-b-rose-500 outline-none rounded-xl m-3 focus:border-purple-800 transition-all resize-none"></textarea>
+                    </div>
+                    {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'DT' %}
+                    <div id="tab{{noi_dung_de.thu_tu_cau}}" class="hidden tab-content items-start">
+                        <div class="max-w-full flex-1">
+                            <div class="border-spacing-1 flex flex-row">
+                                <span class="font-bold ml-2 text-2xl"> Câu {{noi_dung_de.thu_tu_cau}}. {{noi_dung_de.cau_hoi.tieu_de}} </span>
+                            </div>
+                            {% if noi_dung_de.cau_hoi.anh %}
+                            <div class="ml-4 flex-shrink-0">
+                                <img src="{{noi_dung_de.cau_hoi.anh.url}}" alt="Image" class="w-52 h-56">
+                            </div>
+                            {% endif %}
+                            <div class="inline-block ">
+                                {% for stt, ques in dictCDT.items %}
+                                    {% if stt == noi_dung_de.thu_tu_cau %}
+                                     {%  for cau in ques %}
+                                        {% with forloop.counter0 as idx %}
+                                            {% if cau == '<input>' %}
+                                                <input type="text" class="ml-3 w-20 mr-3" id="DT-{{noi_dung_de.thu_tu_cau}}-{{idx}}" name="group{{noi_dung_de.thu_tu_cau}}" placeholder="Nhập câu trả lời...">
+                                            {% else %}
+                                                <span class="">{{ cau }}</span>
+                                            {% endif %}
+                                        {% endwith %}   
+                                     {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                                    
+                </form>
+            </div>
+            <!--sub form-->
+<div class="ml-2 mr-2 top-0 left-0 rounded-lg h-200 w-128 p-1 border border-gray-400 flex flex-col relative">
+             <!-- Nút bật chế độ toàn màn hình -->
+    <button id="fullscreenButton" class="absolute top-0 right-0 m-2 w-8 h-8 flex items-center justify-center border bg-gray-500 text-white rounded-full">
+        ⛶
+    </button>
+            <span class="font-thin ">Thí sinh: {{student.first_name}} {{student.last_name}}</span>
+            <br />
+            <span class="font-thin ">Thời gian làm bài: {{DeThi.thoi_gia_thi}}</span>
+            </br>
+            <div class="flex flex-row justify-center">
+                <span class="font-thin">Thời gian làm bài còn lại: </span>
+                <div id="countdown" class="font-bold"></div>
+            </div>
+            <br>
+            <div class="flex space-x-4 justify-center">
+                <button id="pauseButton" class="w-64 inline-block font-bold border bg-blue-500 border-blue-500 text-white rounded-2xl py-2 px-4">
+                    TẠM DỪNG
+                </button>
+                <button id="submitBtn" class="w-64 inline-block font-bold border bg-orange-500 border-orange-500 text-white rounded-2xl py-2 px-4">
+                    NỘP BÀI
+                </button>
+            </div>
+            <br>
+            <div class="flex flex-row items-center">
+                <span class="mr-2 text-2xl">Chỉ thị màu sắc:</span>
+                <button class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">0</button>
+                <button class="bg-blue-500 text-white px-4 py-2 m-1.5 border rounded-full">0</button>
+                <button class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full border-orange-500">0</button>
+            </div>
+            <br>
+            <div class="bg-black size-1 w-full"></div>
+            <br>
+            <span class="font-bold text-2xl">Các câu hỏi trong phần thi </span>
+            <br>
+            <div class="col-span-5 ml-1">
+                {% for noi_dung_de in dictCHDA.keys %}
+                    <button onclick="showTab('{{noi_dung_de.thu_tu_cau}}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">{{noi_dung_de.thu_tu_cau}}</button>
+                {% endfor %}
+            </div>
+            <br>
+            <div class="text-center mt-2">
+                <p id="progress-text" class="font-bold text-2xl">Bạn đã hoàn thành 0/ tổng số câu</p>
+            </div>
+            <div class="w-full max-w-md mx-auto relative">
+                <div id="progress-bar" class="h-6 w-full bg-gray-400 rounded-full overflow-hidden mt-2">
+                    <div id="progress-indicator" class="h-full bg-blue-600 rounded-full"></div>
+                </div>
+                <div id="progress-percent" class="text-center text-2xl mt-1 font-bold text-gray-600">0%</div>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-1/3 transform -translate-x-1/2 mb-2">
+            <button id="prevButton" onclick="prevTab()" class="mx-2 w-40 inline-block font-bold border bg-blue-900 border-500 text-white rounded-2xl py-2 px-4"> < Câu trước </button>
+            <button id="nextButton" onclick="nextTab()" class="mx-2 w-40 inline-block font-bold border bg-blue-900 border-500 text-white rounded-2xl py-2 px-4">  Câu sau > </button>
+        </div>
+    </div>
+    
+</div>
+
+
+<script>
+    const maxTabs = {{lenkeys}}; 
+    let currentTab = 1;
+
+    var totalQuestions = maxTabs;
+    function showTab(tabNumber) {
+        console.log(tabNumber);
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.add('hidden');
+        });
+        document.getElementById(`tab${tabNumber}`).classList.remove('hidden');
+        currentTab = tabNumber;
+        updateButtonStates();
+    }
+
+    function prevTab() {
+        if (currentTab > 1) {
+            showTab(currentTab - 1);
+        }
+    }
+
+    function nextTab() {
+        if (currentTab < maxTabs) {
+            prevTab();
+            showTab(currentTab + 2);
+        }
+    }
+
+    function updateButtonStates() {
+        document.getElementById('prevButton').disabled = currentTab === 1;
+        document.getElementById('nextButton').disabled = currentTab === maxTabs;
+    }
+
+    showTab(1);
+    
+   function updateColorIndicators(tabNumber) {
+    var buttons = document.querySelectorAll('.col-span-5 button[data-tab="' + tabNumber + '"]');
+    buttons.forEach(function(button) {
+        var isAnswered = false;
+        var inputs = document.querySelectorAll('input[name="group' + tabNumber + '"]');
+        inputs.forEach(function(input) {
+            if (input.checked) {
+                isAnswered = true;
+            }
+        });
+        if (isAnswered) {
+            button.classList.remove('bg-gray-300', 'border-gray-300', 'text-black');
+            button.classList.add('bg-blue-500', 'border-blue-500', 'text-white');
+        } else {
+            button.classList.remove('bg-blue-500', 'border-blue-500', 'text-white');
+            button.classList.add('bg-gray-300', 'border-gray-300', 'text-black');
+        }
+    });
+}
+
+    function updateColorIndicatorsForText(tabNumber) {
+        var button = document.querySelector(`.col-span-5 button[data-tab="${tabNumber}"]`);
+        if (!button) return;
+
+        var textarea = document.querySelector(`#inputTextArea${tabNumber}`);
+        if (!textarea) return;
+
+        var isAnswered = textarea.value.trim() !== '';
+        if (isAnswered) {
+            button.classList.remove('bg-gray-300', 'border-gray-300', 'text-black');
+            button.classList.add('bg-blue-500', 'border-blue-500', 'text-black');
+        } else {
+            button.classList.remove('bg-blue-500', 'border-blue-500', 'text-black');
+            button.classList.add('bg-gray-300', 'border-gray-300', 'text-black');
+        }
+    }
+    document.addEventListener('change', function(event) {
+        var target = event.target;
+        if (target.matches('input[type="radio"], input[type="checkbox"]')) {
+            var tabNumber = target.closest('.tab-content').id.replace('tab', '');
+            updateColorIndicators(tabNumber);    
+            updateProgress();
+        }
+    });
+
+    document.addEventListener('input', function(event) {
+        var target = event.target;
+        if (target.matches('textarea')) {
+            var tabNumber = target.id.replace('inputTextArea', '');
+            updateColorIndicatorsForText(tabNumber);
+            updateProgress();
+        }
+    });
+
+
+    function updateProgress() {
+        var answeredQuestions = calculateAnsweredQuestions();
+
+        var progressText = document.getElementById('progress-text');
+        progressText.textContent = 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions;
+
+        var progressPercentage = (answeredQuestions / totalQuestions) * 100;
+        var progressIndicator = document.getElementById('progress-indicator');
+        progressIndicator.style.width = progressPercentage + '%';
+
+        var progressPercent = document.getElementById('progress-percent');
+        progressPercent.textContent = Math.round(progressPercentage) + '%';
+    }
+
+    function calculateAnsweredQuestions() {
+    var answeredCount = 0;
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    if (checkboxes.length > 0) {    
+        answeredCount += 1;
+    }
+    var radios = document.querySelectorAll('input[type="radio"]:checked');
+    answeredCount += radios.length;
+
+        var textareas = document.querySelectorAll('textarea');
+        textareas.forEach(function(textarea) {
+            if (textarea.value.trim() !== '') {
+                answeredCount++;
+            }
+        });
+
+        return answeredCount;
+    }
+
+        updateProgress();
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            Swal.fire({
+                icon: 'question',
+                title: 'Bạn có chắc chắn muốn nộp bài?',
+                showCancelButton: true,
+                confirmButtonText: 'Nộp bài',
+                cancelButtonText: 'Hủy',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var deThiValue = '{{ DeThi.id }}'; 
+                    document.getElementById('DeThiInput').value = deThiValue;
+                    var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                    document.getElementById('thoiGianInput').value = thoiGianConLai;            
+                    document.getElementById('answerForm').submit();
+                   
+                }
+            });
+        });
+        document.getElementById('thoatButton').addEventListener('click', function() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Bạn có thực sự muốn thoát',
+                showCancelButton: true,
+                confirmButtonText: 'Thoát',
+                cancelButtonText: 'Hủy',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'core:index' %}";
+                } 
+        
+            });
+        });
+        var isPaused = false;
+        var countdownInterval;
+        var remainingTime;
+
+        function startCountdown(duration, display) {
+            var timer = duration, minutes, seconds;
+            countdownInterval = setInterval(function () {
+                if (!isPaused) {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    display.textContent = minutes + ":" + seconds;
+
+                    if (--timer === 0) {
+                        clearInterval(countdownInterval);
+                        var deThiValue = '{{ DeThi.id }}';  
+                        document.getElementById('DeThiInput').value = deThiValue;
+                        var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                        document.getElementById('thoiGianInput').value = thoiGianConLai;
+                        document.getElementById('answerForm').submit();
+                    }
+                }
+                remainingTime = timer; 
+            }, 1000);
+        }
+        document.getElementById('pauseButton').addEventListener('click', function() {
+            isPaused = true;
+            var answeredQuestions = calculateAnsweredQuestions();
+            Swal.fire({
+                icon: 'info',
+                title: 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions,
+                showCancelButton: true,
+                confirmButtonText: 'Tiếp tục làm bài',
+                cancelButtonText: 'Nộp bài',
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.cancel) {
+                    var deThiValue = '{{ DeThi.id }}';
+                    document.getElementById('DeThiInput').value = deThiValue;
+        
+                    var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                    document.getElementById('thoiGianInput').value = thoiGianConLai;
+                    document.getElementById('answerForm').submit();
+                } else {
+                    isPaused = false;
+                    startCountdown(remainingTime, document.querySelector('#countdown'));
+                    // Check if currently in fullscreen mode
+                    var mainExamContent = document.getElementById('mainExamContent');
+                    if (!document.fullscreenElement) {
+                        mainExamContent.requestFullscreen();
+                    }
+                }
+            });
+            stopCountdown();
+        });
+    window.addEventListener('beforeunload', function (event) {
+
+        var confirmationMessage = 'Bạn có chắc chắn muốn rời khỏi trang này!!!?';
+        event.returnValue = confirmationMessage;
+        return confirmationMessage;
+    });
+
+    window.onload = function () {
+        var Minutes = {{tthi}}, // 5 phút
+        display = document.querySelector('#countdown');
+    startCountdown(Minutes, display);
+
+    };
+    document.getElementById('fullscreenButton').addEventListener('click', function() {
+        var mainExamContent = document.getElementById('mainExamContent');
+        if (!document.fullscreenElement) {
+            mainExamContent.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    });
+
+    document.addEventListener('fullscreenchange', function() {
+        var mainExamContent = document.getElementById('mainExamContent');
+        if (document.fullscreenElement === mainExamContent) {
+            // Only show mainexamcontent in fullscreen
+            document.body.classList.add('fullscreen');
+            document.getElementById('contentWrapper').style.display = 'none'; // Hide other content
+        } else {
+        
+            document.body.classList.remove('fullscreen');
+            document.getElementById('contentWrapper').style.display = 'block'; // Show other content
+        }
+    });
+
+</script>
+{% endblock %}

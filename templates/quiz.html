@@ -1,0 +1,550 @@
+{% extends 'homepage/base.html' %} 
+{% block content %} 
+{% load static %}
+<style>
+    .btn-default {
+        background-color: #fff;
+        color: #000;
+    }
+    .btn-selected {
+        background-color: #3490dc;
+        color: #000;
+    }
+    .btn-passed {
+        background-color: #f59e0b;
+        color: #000;
+    }
+</style>
+<div class="">
+    <!--title-->
+    <div>
+        <div class="border-t border-gray-600 opacity-50 w-full"></div>
+        <div class="bg-white  flex flex-col w-full h-24 items-center rounded-sm justify-center">
+            <span class="font-bold text-2xl">Môn thi: {{ DeThi.mon_thi }}</span>
+            <div class="flex flex-row justify-center items-center">
+                <button id="thoatButton" class="ml-3 inline-block bg-green-300 text-white rounded-lg py-1 px-3 hover:bg-green-600" value="Thoát">Thoát</button>
+            </div>
+        </div>
+        <div class="border-t border-gray-600 opacity-50 w-full"></div>
+    </div>
+    <div id="mainExamContent" class="bg-gray-200 flex flex-col h-full justify-between">
+        <br />
+        <div class="ml-12 flex flex-col justify-center h-1 text-2xl">
+            <span class="font-bold text-orange-400">{{ DeThi.ten_de_thi }}</span>
+        </div>
+        <br />
+
+        <!--main exam-->
+        <div class="flex flex-grow h-200 relative">
+            <!--main form-->
+            <div class="bg-white relative ml-12 mr-12 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+                
+                <form id="answerForm" method="POST" action="{% url 'DanhGiaTuDuy:chamthi' %}">
+                    <input type="hidden" id="DeThiInput" name="DeThiInput" />
+                    <input type="hidden" id="thoiGianInput" name="thoiGianInput" />
+                    <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-styled-tab" data-tabs-toggle="#default-styled-tab-content" data-tabs-active-classes="text-purple-600 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-500 border-purple-600 dark:border-purple-500" data-tabs-inactive-classes="dark:border-transparent text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300" role="tablist">
+                            <li class="me-2" role="presentation">
+                                <button class="inline-block p-4 border-b-2 rounded-t-lg" id="tabTracNghiemBtn" data-tabs-target="#tabTracNghiem" type="button" role="tab" aria-controls="tracnghiem" aria-selected="false">Tư duy Toán Học</button>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="tabDungSaiBtn" data-tabs-target="#tabDungSai" type="button" role="tab" aria-controls="dungsai" aria-selected="false">Tư duy Đọc hiểu</button>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="tabTuLuanBtn" data-tabs-target="#tabTuLuan" type="button" role="tab" aria-controls="tuluan" aria-selected="false">Tư duy Khoa Học</button>
+                            </li>
+                        </ul>
+                    </div>
+            
+                    <div id="default-styled-tab-content">
+                        <div class="tab-content hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="tabTracNghiem" role="tabpanel" aria-labelledby="tracnghiem-tab">
+                            {% for noi_dung_de, dapans in dictCHDA.items %}
+                                {% if noi_dung_de.cau_hoi.phan_thi == 'TDTH' %}
+                                    {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    
+                        <div class="tab-content hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="tabDungSai" role="tabpanel" aria-labelledby="dungsai-tab">
+                            {% for noi_dung_de, dapans in dictCHDA.items %}
+                                {% if noi_dung_de.cau_hoi.phan_thi == 'TDDH' %}
+                                    {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    
+                        <div class="tab-content hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="tabTuLuan" role="tabpanel" aria-labelledby="tuluan-tab">
+                            {% for noi_dung_de, dapans in dictCHDA.items %}
+                                {% if noi_dung_de.cau_hoi.phan_thi == 'TDKH' %}
+                                    {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% csrf_token %}
+                </form>
+                
+            </div>
+            <!--sub form-->
+            <div class="bg-white ml-2 mr-2 top-0 left-0 rounded-lg h-200 w-128 p-1 border border-gray-400 flex flex-col relative">
+                <button id="fullscreenButton" class="absolute top-0 right-0 m-2 w-8 h-8 flex items-center justify-center border bg-gray-500 text-white rounded-full">
+                    ⛶
+                </button>
+                {% comment %} <span class="font-thin text-2xl">Thí sinh: {{student.first_name}} {{student.last_name}}</span>
+                <span class="font-thin text-2xl">Thời gian làm bài: {{DeThi.thoi_gia_thi}}</span> {% endcomment %}
+                <div class="flex flex-row justify-center mt-4">
+                    <span class="font-bold text-2xl">Thời gian làm bài còn lại: </span>
+                    <div id="countdown" class="font-bold text-2xl"></div>
+                </div>
+                <br />
+                <div class="flex space-x-4 justify-center">
+                    <button id="pauseButton" class="w-52 inline-block font-bold border bg-blue-500 border-blue-500 text-white rounded-2xl py-2 px-2 mx-4">
+                        TẠM DỪNG
+                    </button>
+                    <button id="submitBtn" class="w-52 inline-block font-bold border bg-orange-500 border-orange-500 text-white rounded-2xl py-2 px-2 mx-4">
+                        NỘP BÀI
+                    </button>
+                </div>
+                
+                <br />
+                <div class="flex flex-row items-center">
+                    <span class="mr-2 text-2xl">Chỉ thị màu sắc:</span>
+                    <button class="bg-gray-200 text-black px-4 py-2 m-1.5 border rounded-full">0</button>
+                    <button class="bg-blue-500 text-white px-4 py-2 m-1.5 border rounded-full">0</button>
+                    <button class="bg-gray-200 text-black px-4 py-2 m-1.5 border rounded-full border-orange-500">0</button>
+                </div>
+                <br />
+                <span class="font-bold text-2xl">Các câu hỏi trong phần thi </span>
+                <br />
+                <div class="col-span-5 ml-1 border border-gray-400 rounded-lg">
+                    {% for noi_dung_de, dapans in dictCHDA.items %}
+                    <button id="button-{{ noi_dung_de.thu_tu_cau }}"
+                            onclick="showQuestionAndTab('{{ noi_dung_de.cau_hoi.phan_thi }}', 'question-{{ noi_dung_de.thu_tu_cau }}')" 
+                            class="bg-gray-200 text-black px-4 py-2 m-1.5 border rounded-full">{{ noi_dung_de.thu_tu_cau }}</button>
+                    {% endfor %}
+                </div>
+                <br />
+                <div class="text-center mt-2">
+                    <p id="progress-text" class="font-bold text-2xl">Bạn đã hoàn thành 0/ tổng số câu</p>
+                </div>
+                <div class="w-full max-w-md mx-auto relative">
+                    <div id="progress-bar" class="h-6 w-full bg-gray-400 rounded-full overflow-hidden mt-2">
+                        <div id="progress-indicator" class="h-full bg-blue-600 rounded-full"></div>
+                    </div>
+                    <div id="progress-percent" class="text-center text-2xl mt-1 font-bold text-gray-600">0%</div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-1/3 transform -translate-x-1/2 mb-2">
+                <button id="prevButton" onclick="prevQuestion()" class="mx-2 w-40 inline-block font-bold border bg-blue-900 border-500 text-white rounded-2xl py-2 px-4">< Câu trước</button>
+                <button id="nextButton" onclick="nextQuestion()" class="mx-2 w-40 inline-block font-bold border bg-blue-900 border-500 text-white rounded-2xl py-2 px-4">Câu sau ></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            const maxTabs = {{lenkeys}};
+            var totalQuestions = maxTabs;
+            let currentTab = 'tabTracNghiem'; // Tab mặc định hiển thị ban đầu
+            let currentQuestionId = '';
+            let maxQuestions = maxTabs; // Số lượng câu hỏi trong tab hiện tại, sẽ được cập nhật sau
+            function showTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.add('hidden');
+                });
+                // Ẩn tất cả các tab button và đặt aria-selected="false"
+                document.querySelectorAll('[role="tab"]').forEach(tabButton => {
+                    tabButton.setAttribute('aria-selected', 'false');
+                    tabButton.classList.remove('text-purple-600', 'hover:text-purple-600', 'dark:text-purple-500', 'dark:hover:text-purple-500', 'border-purple-600', 'dark:border-purple-500');
+                    tabButton.classList.add('text-gray-500', 'hover:text-gray-600', 'dark:text-gray-400', 'border-gray-100', 'hover:border-gray-300', 'dark:border-gray-700', 'dark:hover:text-gray-300');
+                });
+            
+                // Hiển thị tab được chọn và đặt aria-selected="true"
+                const selectedTab = document.querySelector(tabId);
+                if (selectedTab) {
+                    selectedTab.classList.remove('hidden');
+                }
+                // Tìm và cập nhật tab button tương ứng
+                const selectedTabButton = document.getElementById(tabId.slice(1) + 'Btn');
+                if (selectedTabButton) {
+                    selectedTabButton.setAttribute('aria-selected', 'true');
+                    selectedTabButton.classList.add('text-purple-600', 'hover:text-purple-600', 'dark:text-purple-500', 'dark:hover:text-purple-500', 'border-purple-600', 'dark:border-purple-500');
+                    selectedTabButton.classList.remove('text-gray-500', 'hover:text-gray-600', 'dark:text-gray-400', 'border-gray-100', 'hover:border-gray-300', 'dark:border-gray-700', 'dark:hover:text-gray-300');
+                }
+                // Cập nhật lại currentTab và hiển thị câu hỏi đầu tiên của tab mới
+                currentTab = tabId;
+                const firstQuestion = document.querySelector(`${currentTab} .question-container`);
+                if (firstQuestion) {
+                    currentQuestionId = firstQuestion.id;
+                    showQuestion(currentQuestionId);
+                }
+            }
+            // Hàm hiển thị câu hỏi
+            function showQuestion(questionId) {
+                // Ẩn tất cả các câu hỏi
+                document.querySelectorAll(`${currentTab} .question-container`).forEach(question => {
+                    question.classList.add('hidden');
+                });
+
+                // Hiển thị câu hỏi được chọn
+                const selectedQuestion = document.getElementById(questionId);
+                if (selectedQuestion) {
+                    selectedQuestion.classList.remove('hidden');
+                }
+
+                // Cập nhật trạng thái của các nút điều hướng câu hỏi
+                updateNavigationButtons();
+            }
+            // Hàm hiển thị tab hiện tại và câu hỏi
+            function showQuestionAndTab(questionType, questionId) {
+                let tabId;
+
+                // Xác định tabId dựa vào loại câu hỏi
+                switch (questionType) {
+                    case 'TDTH': // Trắc nghiệm
+                        tabId = '#tabTracNghiem';
+                        break;
+                    case 'TDDH': // Đúng/sai
+                        tabId = '#tabDungSai';
+                        break;
+                    case 'TDKH': // Tự luận
+                        tabId = '#tabTuLuan';
+                        break;
+                    default:
+                        tabId = null; // Nếu không có loại câu hỏi tương ứng
+                        break;
+                }
+
+                // Hiển thị tab được chọn và câu hỏi
+                if (tabId) {
+                    showTab(tabId);
+                    showQuestion(questionId);
+                    
+                } else {
+                    console.error('Không tìm thấy tab cho loại câu hỏi này.'+tabId);
+                }
+            }
+
+            // Hàm lấy id của tab hiện tại dựa vào questionId
+            function getCurrentTabId(questionId) {
+                // Tìm tab chứa câu hỏi có questionId
+                const tabContent = document.querySelector(`.tab-content ${questionId}`);
+                if (tabContent) {
+                    const tabId = tabContent.closest('.tab-content').id;
+                    return `#${tabId}`;
+                }
+                return null; // Trả về null nếu không tìm thấy
+            }
+            // Hàm cập nhật trạng thái nút điều hướng câu hỏi
+            function updateNavigationButtons() {
+                const questions = document.querySelectorAll(`${currentTab} .question-container`);
+                const currentIndex = Array.from(questions).findIndex(question => question.id === currentQuestionId);
+
+                const prevButton = document.getElementById('prevButton');
+                const nextButton = document.getElementById('nextButton');
+
+                prevButton.disabled = currentIndex === 0;
+                nextButton.disabled = currentIndex === questions.length - 1;
+            }
+
+            // Hàm điều hướng câu hỏi trước đó
+            function prevQuestion() {
+                const questions = document.querySelectorAll(`${currentTab} .question-container`);
+                const currentIndex = Array.from(questions).findIndex(question => question.id === currentQuestionId);
+
+                if (currentIndex > 0) {
+                    const prevQuestionId = questions[currentIndex - 1].id;
+                    currentQuestionId = prevQuestionId;
+                    showQuestion(currentQuestionId);
+                }
+            }
+
+            // Hàm điều hướng câu hỏi tiếp theo
+            function nextQuestion() {
+                const questions = document.querySelectorAll(`${currentTab} .question-container`);
+                const currentIndex = Array.from(questions).findIndex(question => question.id === currentQuestionId);
+
+                if (currentIndex < questions.length - 1) {
+                    const nextQuestionId = questions[currentIndex + 1].id;
+                    currentQuestionId = nextQuestionId;
+                    showQuestion(currentQuestionId);
+                }
+            }
+            showTab('#tabTuLuan');
+            showTab('#tabDungSai');
+            showTab('#tabTracNghiem'); 
+            
+             
+
+            function updateColorIndicators(tabNumber) {
+                var questionContainers = document.querySelectorAll(`#tab${tabNumber} .question-container`);
+                questionContainers.forEach(function(container) {
+                    var isAnswered = false;
+                    var inputs = container.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+                    inputs.forEach(function(input) {
+                        if (input.checked) {
+                            isAnswered = true;
+                        }
+                    });
+                    var buttonId = container.id.replace('question-', 'button-');
+                    var button = document.getElementById(buttonId);
+                    if (button) {
+                        if (isAnswered) {
+                            button.classList.remove('bg-gray-200', 'border-gray-200', 'text-black');
+                            button.classList.add('bg-blue-500', 'border-blue-500', 'text-white');
+                        } else {
+                            button.classList.remove('bg-blue-500', 'border-blue-500', 'text-white');
+                            button.classList.add('bg-gray-200', 'border-gray-200', 'text-black');
+                        }
+                    }
+                });
+            }
+        
+            function updateColorIndicatorsForText(tabNumber) {
+                var textarea = document.querySelector(`#inputTextArea${tabNumber}`);
+                if (!textarea) return;
+        
+                var isAnswered = textarea.value.trim() !== '';
+                var button = document.getElementById(`button-${tabNumber}`);
+                if (button) {
+                    if (isAnswered) {
+                        button.classList.remove('bg-gray-200', 'border-gray-200', 'text-black');
+                        button.classList.add('bg-blue-500', 'border-blue-500', 'text-white');
+                    } else {
+                        button.classList.remove('bg-blue-500', 'border-blue-500', 'text-white');
+                        button.classList.add('bg-gray-200', 'border-gray-200', 'text-black');
+                    }
+                }
+            }
+        
+            document.addEventListener('change', function(event) {
+                var target = event.target;
+                if (target.matches('input[type="radio"], input[type="checkbox"]')) {
+                    var tabContent = target.closest('.tab-content');
+                    if (tabContent) {
+                        var tabNumber = tabContent.id.replace('tab', '');
+                        updateColorIndicators(tabNumber);
+                        updateProgress();
+                    }
+                }
+            });
+        
+            document.addEventListener('input', function(event) {
+                var target = event.target;
+                if (target.matches('textarea')) {
+                    var tabNumber = target.id.replace('inputTextArea', '');
+                    updateColorIndicatorsForText(tabNumber);
+                    updateProgress();
+                }
+            });
+        
+
+
+            function updateProgress() {
+                var answeredQuestions = calculateAnsweredQuestions();
+
+                var progressText = document.getElementById('progress-text');
+                progressText.textContent = 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions;
+
+                var progressPercentage = (answeredQuestions / totalQuestions) * 100;
+                var progressIndicator = document.getElementById('progress-indicator');
+                progressIndicator.style.width = progressPercentage + '%';
+
+                var progressPercent = document.getElementById('progress-percent');
+                progressPercent.textContent = Math.round(progressPercentage) + '%';
+            }
+
+            {% comment %} function calculateAnsweredQuestions() {
+            var answeredCount = 0;
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            if (checkboxes.length > 0) {
+                answeredCount += 1;
+            }
+            var radios = document.querySelectorAll('input[type="radio"]:checked');
+            answeredCount += radios.length;
+
+                var textareas = document.querySelectorAll('textarea');
+                textareas.forEach(function(textarea) {
+                    if (textarea.value.trim() !== '') {
+                        answeredCount++;
+                    }
+                });
+
+                return answeredCount;
+            } {% endcomment %}
+            function calculateAnsweredQuestions() {
+                var answeredCount = 0;
+            
+                // Đếm số câu hỏi Đúng/Sai đã được trả lời
+                var questionIds = new Set();
+                var checkboxes = document.querySelectorAll('.tab-content input[type="checkbox"]:checked:not(.hidden)');
+                checkboxes.forEach(function(checkbox) {
+                    var questionId = checkbox.name; // Assuming each group of checkboxes has a unique name per question
+                    questionIds.add(questionId);
+                });
+                answeredCount += questionIds.size;
+            
+                // Đếm số câu hỏi Trắc nghiệm đã được trả lời
+                var radioQuestionIds = new Set();
+                var radios = document.querySelectorAll('.tab-content input[type="radio"]:checked');
+                radios.forEach(function(radio) {
+                    var questionId = radio.name; // Assuming each group of radios has a unique name per question
+                    radioQuestionIds.add(questionId);
+                });
+                answeredCount += radioQuestionIds.size;
+            
+                // Đếm số câu hỏi Tự luận đã được trả lời
+                var textareas = document.querySelectorAll('.tab-content textarea');
+                textareas.forEach(function(textarea) {
+                    if (textarea.value.trim() !== '') {
+                        answeredCount++;
+                    }
+                });
+            
+                return answeredCount;
+            }
+                updateProgress();
+                document.getElementById('submitBtn').addEventListener('click', function() {
+                    Swal.fire({
+                        icon: 'question',
+                        title: 'Bạn có chắc chắn muốn nộp bài?',
+                        showCancelButton: true,
+                        confirmButtonText: 'Nộp bài',
+                        cancelButtonText: 'Hủy',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var deThiValue = '{{ DeThi.id }}'; // Lấy giá trị id của đề thi từ context của Django
+                            document.getElementById('DeThiInput').value = deThiValue;
+                
+                            var thoiGianConLai = document.getElementById('countdown').innerHTML; // Lấy giá trị thời gian còn lại từ đếm ngược
+                            document.getElementById('thoiGianInput').value = thoiGianConLai;
+                
+                            // Submit form
+                            document.getElementById('answerForm').submit();
+                        }
+                    });
+                });
+                document.getElementById('thoatButton').addEventListener('click', function() {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Bạn có thực sự muốn thoát',
+                        showCancelButton: true,
+                        confirmButtonText: 'Thoát',
+                        cancelButtonText: 'Hủy',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "{% url 'core:index' %}";
+                        }
+
+                    });
+                });
+                var isPaused = false;
+                var countdownInterval;
+                var remainingTime;
+
+                function startCountdown(duration, display) {
+                    var timer = duration, minutes, seconds;
+                    countdownInterval = setInterval(function () {
+                        if (!isPaused) {
+                            minutes = parseInt(timer / 60, 10);
+                            seconds = parseInt(timer % 60, 10);
+
+                            minutes = minutes < 10 ? "0" + minutes : minutes;
+                            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                            display.textContent = minutes + ":" + seconds;
+
+                            if (--timer === 0) {
+                                clearInterval(countdownInterval);
+                                var deThiValue = '{{ DeThi.id }}';
+                                document.getElementById('DeThiInput').value = deThiValue;
+                                var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                                document.getElementById('thoiGianInput').value = thoiGianConLai;
+                                document.getElementById('answerForm').submit();
+                            }
+                        }
+                        remainingTime = timer;
+                    }, 1000);
+                }
+                document.getElementById('pauseButton').addEventListener('click', function() {
+                    isPaused = true;
+                    var answeredQuestions = calculateAnsweredQuestions();
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions,
+                        showCancelButton: true,
+                        confirmButtonText: 'Tiếp tục làm bài',
+                        cancelButtonText: 'Nộp bài',
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            var deThiValue = '{{ DeThi.id }}';
+                            document.getElementById('DeThiInput').value = deThiValue;
+
+                            var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                            document.getElementById('thoiGianInput').value = thoiGianConLai;
+                            document.getElementById('answerForm').submit();
+                        } else {
+                            isPaused = false;
+                            startCountdown(remainingTime, document.querySelector('#countdown'));
+                            // Check if currently in fullscreen mode
+                            var mainExamContent = document.getElementById('mainExamContent');
+                            if (!document.fullscreenElement) {
+                                mainExamContent.requestFullscreen();
+                            }
+                        }
+                    });
+                    stopCountdown();
+                });
+            window.addEventListener('beforeunload', function (event) {
+
+                var confirmationMessage = 'Bạn có chắc chắn muốn rời khỏi trang này!!!?';
+                event.returnValue = confirmationMessage;
+                return confirmationMessage;
+            });
+
+            window.onload = function () {
+                var Minutes = {{tthi}}, // 5 phút
+                display = document.querySelector('#countdown');
+            startCountdown(Minutes, display);
+
+            };
+            document.getElementById('fullscreenButton').addEventListener('click', function() {
+                var mainExamContent = document.getElementById('mainExamContent');
+                if (!document.fullscreenElement) {
+                    mainExamContent.requestFullscreen();
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            });
+
+            document.addEventListener('fullscreenchange', function() {
+                var mainExamContent = document.getElementById('mainExamContent');
+                if (document.fullscreenElement === mainExamContent) {
+                    // Only show mainexamcontent in fullscreen
+                    document.body.classList.add('fullscreen');
+                    document.getElementById('contentWrapper').style.display = 'none'; // Hide other content
+                } else {
+
+                    document.body.classList.remove('fullscreen');
+                    document.getElementById('contentWrapper').style.display = 'block'; // Show other content
+                }
+            });
+            function updateLabel(checkbox, isCorrect) {
+                var checkboxId = checkbox.id;
+                var otherCheckboxId = checkboxId.includes('dung') ? checkboxId.replace('dung', 'sai') : checkboxId.replace('sai', 'dung');
+                var otherCheckbox = document.getElementById(otherCheckboxId);
+                var hiddenCheckboxId = checkboxId.replace('dung-', '').replace('sai-', '');
+                var hiddenCheckbox = document.getElementById('checkbox-' + hiddenCheckboxId);
+            
+                if (checkbox.checked) {
+                    otherCheckbox.checked = false; // Uncheck the other checkbox
+                    hiddenCheckbox.checked = isCorrect; // Check hidden checkbox if "Đúng", uncheck if "Sai"
+                } else {
+                    hiddenCheckbox.checked = false; // Uncheck hidden checkbox if neither "Đúng" nor "Sai" is checked
+                }
+            }
+    </script>
+    {% endblock %}
+</div>

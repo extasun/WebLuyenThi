@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^3.4.4"
+  },
+  "scripts": {
+    "build-css": "npx tailwindcss -i ./static/src/tailwind.css -o ./static/css/tailwind.css --watch",
+    "start": "concurrently \"npm run build-css\" \"python manage.py runserver\""
+  },
+  "dependencies": {
+    "flowbite": "^2.4.1"
+  }
+}

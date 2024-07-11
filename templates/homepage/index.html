@@ -1,0 +1,87 @@
+﻿{% extends 'homepage/base.html' %}
+{% block content %}
+{% load static %}
+
+<!-- Image and Information -->
+<div class="container mx-auto my-8">
+    <div class="flex">
+        <div class="w-1/2">
+            <img src="{% static 'themes/images/carousel/1.jpg' %}" alt="Image" class="w-full">
+        </div>
+        <div class="w-1/2 p-8">
+            <h2 class="text-3xl font-bold">Thông tin của ảnh</h2>
+            <p class="mt-4 text-xl">Đây là thông tin chi tiết về ảnh được hiển thị ở đây. Bạn có thể thêm bất kỳ nội dung mô tả nào về hình ảnh này.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Section -->
+<div class="container mx-auto my-8">
+    <h2 class="text-3xl font-bold text-center">Biểu đồ</h2>
+    <div class="my-4">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="container mx-auto my-8">
+    <h2 class="text-3xl font-bold text-center">Số liệu của trang web</h2>
+    <div class="flex justify-around mt-8">
+        <div class="text-center">
+            <h3 class="text-2xl font-bold">Số liệu 1</h3>
+            <p class="text-xl">Giá trị 1</p>
+        </div>
+        <div class="text-center">
+            <h3 class="text-2xl font-bold">Số liệu 2</h3>
+            <p class="text-xl">Giá trị 2</p>
+        </div>
+        <div class="text-center">
+            <h3 class="text-2xl font-bold">Số liệu 3</h3>
+            <p class="text-xl">Giá trị 3</p>
+        </div>
+    </div>
+</div>
+
+<!-- Add this script to initialize the chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3, 7],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

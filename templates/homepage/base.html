@@ -1,0 +1,35 @@
+{% load static %} {% load compress %}
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="utf-8" />
+        <title>Web site luyện thi</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" />
+        {% compress css %}
+        <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" />
+        {% endcompress %}
+        <style type="text/css" id="enject"></style>
+    </head>
+    <body>
+        {% include 'homepage/header.html' %} 
+        <div class="flex flex-col justify-between min-h-screen">
+            <div class="flex-1">
+                {% block content %}
+                <!-- Your content goes here -->
+                {% endblock content %}
+            </div>
+            {% include 'homepage/footer.html' %}
+        </div>
+        <script src="{%static 'themes/js/jquery.js'%}" type="text/javascript"></script>
+        <script src="{%static 'themes/js/bootstrap.min.js'%}" type="text/javascript"></script>
+        <script src="{%static 'themes/js/google-code-prettify/prettify.js'%}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{%static 'themes/js/bootshop.js'%}"></script>
+        <script src="{%static 'themes/js/jquery.lightbox-0.5.js'%}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+    </body>
+</html>

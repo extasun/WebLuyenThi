@@ -1,0 +1,39 @@
+<!-- vertical_inline.html -->
+{% load static %}
+
+<table class="admin-tabular-inline">
+    {% for form in inline_admin_formset %}
+    <tr class="{% cycle 'row1' 'row2' %}">
+        <td>
+            <fieldset class="module aligned {{ form.css_classes }}">
+                {% for fieldset in inline_admin_formset %}
+                {% for line in fieldset %}
+                {% for field in line %}
+                {% if field.is_readonly %}
+                {{ field.contents }}
+                {% else %}
+                {% if not field.is_checkbox %}
+                <div class="form-row {% if field.field.required %}required{% endif %} {% if field.errors %}errors{% endif %}">
+                    {{ field.label_tag }}
+                    <div class="field-box">
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                </div>
+                {% else %}
+                <div class="form-row checkbox-row">
+                    <div class="field-box">
+                        {{ field }}
+                        {{ field.label_tag }}
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+            </fieldset>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

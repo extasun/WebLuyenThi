@@ -1,0 +1,33 @@
+{% extends 'homepage/base.html' %} 
+{% block content %} 
+{% load static %}
+
+<div class="grid grid-cols-4 gap-4 items-start mb-12 p-4 ml-12 mr-12 ">
+    {% for dethi in listDeThiDGTD %}
+    <div class="col-span-1 rounded-lg border border-gray-800 p-4">
+        <!-- Tên đề thi -->
+        <div class="mb-4">
+            <p class="w-full p-2 border border-gray-300 rounded text-center font-bold">{{ dethi.ten_de_thi }}</p>
+        </div>
+        <!-- Thông tin bài thi -->
+        <div class="mb-4">
+            <p class="w-full p-2 border border-gray-300 rounded">Loại đề: {{ dethi.loai_de }}</p>
+        </div>
+        <!-- Thời gian thi -->
+        <div class="mb-4">
+            <p class="w-full p-2 border border-gray-300 rounded flex justify-between items-center">
+                <span>Thời gian thi: {{ dethi.thoi_gian_thi }}</span>
+            </p>
+        </div>
+        <!-- Nút Chi tiết và Thi -->
+        <div class="flex justify-between mt-4">
+            <button class="w-1/2 p-2 bg-blue-500 text-white rounded mr-2">Chi tiết</button>
+            <a href="{% url 'DanhGiaTuDuy:dgtd_id' idde=dethi.id %}" class="w-1/2">
+                <button class="w-full p-2 bg-green-500 text-white rounded">Thi</button>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

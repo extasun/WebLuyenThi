@@ -1,0 +1,314 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+{% load static %} 
+<style>
+    .hexagon {
+        position: relative;
+        width: 150px; /* Increase by 1.5 times */
+        height: 82.5px; /* Increase by 1.5 times */
+        background-color: #3490dc;
+        margin: 30px auto;
+    }
+
+    .hexagon:before,
+    .hexagon:after {
+        content: "";
+        position: absolute;
+        width: 0;
+        border-left: 75px solid transparent; /* Increase by 1.5 times */
+        border-right: 75px solid transparent; /* Increase by 1.5 times */
+    }
+
+    .hexagon:before {
+        bottom: 100%;
+        border-bottom: 41.25px solid #3490dc; /* Increase by 1.5 times */
+    }
+
+    .hexagon:after {
+        top: 100%;
+        width: 0;
+        border-top: 41.25px solid #3490dc; /* Increase by 1.5 times */
+    }
+
+    .hexagon-border {
+        position: relative;
+        width: 180px; /* Increase by 1.5 times */
+        height: 99px; /* Increase by 1.5 times */
+        margin: 30px auto;
+    }
+
+    .hexagon-border:before,
+    .hexagon-border:after {
+        content: "";
+        position: absolute;
+        width: 0;
+        border-left: 90px solid transparent; /* Increase by 1.5 times */
+        border-right: 90px solid transparent; /* Increase by 1.5 times */
+    }
+
+    .hexagon-border:before {
+        bottom: 100%;
+        border-bottom: 49.5px solid #000; /* Increase by 1.5 times */
+    }
+
+    .hexagon-border:after {
+        top: 100%;
+        width: 0;
+        border-top: 49.5px solid #000; /* Increase by 1.5 times */
+    }
+</style>
+<div class="">
+    <!--title-->
+    <div>
+        {% comment %} <div class="bg-white flex flex-col w-full h-56 items-center rounded-sm justify-center ">
+            <span class="font-bold text-2xl ">Môn thi: {{ LuotThi.de_thi.mon_thi }}</span>
+            <span class="font-bold ">Tên đề thi: {{LuotThi.de_thi.ten_de_thi}}</span>
+            <div class="flex flex-row justify-center items-center">
+            <span class="font-bold ">Tên thí sinh: </span>
+            <span class="font-serif"> {{LuotThi.nguoi_lam.first_name}} {{LuotThi.nguoi_lam.last_name}} </span>
+            </div>
+            <div class="flex flex-row justify-center items-center">
+                <span class="font-bold ">Tổng số câu: </span>
+                <span class="font-serif"> {{TongSoCau}} </span>
+            </div>
+            <div class="flex flex-row justify-center items-center">
+                <span class="font-bold ">Tổng Số câu đúng: </span>
+                <span class="font-serif"> {{LuotThi.so_cau_dung}} </span>
+            </div>
+            <div class="flex flex-row justify-center items-center">
+                <span class="font-bold ">Điểm số: </span>
+                <span class="font-serif"> {{LuotThi.diem_so}} </span>
+            </div>
+            <button id="thoatButton" class="mt-2 mb-2 ml-3 inline-block bg-green-300 text-white rounded-lg py-1 px-3 hover:bg-green-600" value="Thoát">Thoát</button>
+        </div> {% endcomment %}
+        <div class="border-t border-gray-600 opacity-50 w-full"></div>
+    </br>
+        <div class=" flex flex-row justify-center items-center">
+            <div class="ml-6 border-4 rounded-lg min-h-44 border-black flex flex-col items-center justify-center h-auto w-64">
+                <span class="font-bold">Trắc nghiệm</span>
+                <br>
+                <span>Số câu đúng: {{tn_dung}}</span>
+                <span>Tổng số câu: {{tong_tn}}</span>
+            </div>
+            <div class="ml-6 border-4 rounded-lg min-h-44 border-black flex flex-col items-center justify-center h-auto w-64">
+                <span class="font-bold">Đúng sai</span>
+                <br>
+                {% for item in diem_DS %}
+                <span>  {{item}}</span>
+                {% endfor %}
+            </div>
+            <div class="ml-6 border-4 rounded-lg min-h-44 border-black flex flex-col items-center justify-center h-auto w-64">
+                <span class="font-bold">Trả lời ngăn</span>
+                <br>
+                <span>Số câu đúng: {{ngan_dung}}</span>
+                <span>Tổng số câu: {{tong_ngan}}</span>
+            </div>
+            <div class="hexagon bg-white flex flex-col justify-center items-center">
+                    <span class="font-bold ">Môn thi: {{ LuotThi.de_thi.mon_thi }}</span>
+                    <span class="font-bold ">Thời gian thi: {{ LuotThi.thoi_gian_hoan_thanh }}</span>
+                    <div class="flex flex-row justify-center items-center">
+                        <span class="font-bold ">Điểm số: </span>
+                        <span class="font-serif"> {{LuotThi.diem_so}} </span>
+                    </div>
+            </div>
+            
+        </div>
+    </br>
+        <div class="border-t border-gray-600 opacity-50 w-full"></div>
+</div>
+ <!--main exam-->
+<div class="flex flex-row ">
+    <div class="ml-3 mr-5 group top-0 left-0 h-400 rounded-lg w-full p-2 border border-gray-400  flex flex-col overflow-auto">
+        {% for noi_dung_de, value in dictBLDA.items %}
+        {% if noi_dung_de.cau_hoi.loai_cau_hoi == 'TN' %}
+        <div id="tab{{noi_dung_de.thu_tu_cau}}" class="tab-content h-full m-2 items-start border-2 border-black rounded-lg">
+            <div class="max-w-2xl flex-1">
+                <div class="border-spacing-1 flex flex-col" >
+                    <span class="font-bold ml-2"> Câu {{noi_dung_de.thu_tu_cau}}.  </span>
+                    <span class="font-semibold ml-2">{{noi_dung_de.cau_hoi.noi_dung}}</span>
+                </div>
+                <br>
+                <div class="flex flex-col">
+                    <span class="font-bold">Đáp án của bạn:  </span>
+                    {%if not value.bai_lam_list %}
+                    <span class="font-mono ">  </span>
+                    {% elif value.bai_lam_list.0.tinh_dung %}
+                    <span class="font-mono text-green-400"> {{value.bai_lam_list.0.dap_an.noi_dung}} </span>
+                    {% else %}
+                    <span class="font-mono text-red-300"> {{value.bai_lam_list.0.dap_an.noi_dung}} </span>
+                    {% endif %}
+                </div>
+                <br>
+                <div class="flex flex-col w-max h-auto border-dashed border-2 border-red-300"> 
+                    <span class="font-bold text-red-300">Đáp án đúng là: </span>
+                    {% for dap_an in value.dapan_list %}
+                        <label class="inline-flex items-center ml-6">
+                            <span class="ml-2">{{dap_an.noi_dung}}</span>
+                        </label>
+                    {% endfor %} 
+                </div>
+            </div>
+            {%if noi_dung_de.cau_hoi.anh%}
+                <div class="ml-4 flex-shrink-0">
+                    <img src="{{noi_dung_de.cau_hoi.anh.url}}" alt="Image" class="max-w-2xl max-2xl   ">
+                </div>
+            {% endif %}
+            <br>
+            <div class="flex flex-col w-max h-auto border-2 border-r-gray-300">
+                <span class="font-bold text-green-300">Chuyên đề câu hỏi: {{noi_dung_de.cau_hoi.chuyenDe.ten_chuyen_de}}</span>
+                <span class="font-bold text-blue-500"> Lời giải của giáo viên </span>
+                <span class="font-thin"> {{noi_dung_de.cau_hoi.cach_giai}} </span>
+            </div>
+            <div class="border-t border-gray-600 opacity-50 w-full"></div>
+        </div>
+        {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'DS'%}
+        <div id="tab{{noi_dung_de.thu_tu_cau}}" class="tab-content h-full items-start m-2 border-2 border-black rounded-lg">
+            <div class="max-w-2xl flex-1">
+                <div class="border-spacing-1 flex flex-col" >
+                    <span class="font-bold ml-2"> Câu {{noi_dung_de.thu_tu_cau}}.  </span>
+                    <span class="font-semibold ml-2">{{noi_dung_de.cau_hoi.noi_dung}}</span>
+                </div>
+                <br>
+                <div class="flex flex-col">
+                    <span class="font-bold">Đáp án của bạn:  </span>
+                    {%if not value.bai_lam_list %}
+                    <span class="font-mono ">  </span>
+                    {%else%}
+                        {% for bailam in value.bai_lam_list %}
+                            {% if bailam.tinh_dung %}
+                            <span class="font-mono text-green-400"> {{bailam.dap_an.noi_dung}} </span>
+                            {% else %}
+                            <span class="font-mono text-red-300"> {{bailam.dap_an.noi_dung}} </span>
+                            {% endif %}     
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <br>
+                <div class="flex flex-col w-max h-auto border-dashed border-2 border-red-300"> 
+                    <span class="font-bold text-red-300">Đáp án đúng là: </span>
+                    {% for dap_an in value.dapan_list %}
+                        <label class="inline-flex items-center ml-6">
+                            <span class="ml-2">{{dap_an.noi_dung}}</span>
+                        </label>
+                    {% endfor %} 
+                </div>
+            </div>
+            {%if noi_dung_de.cau_hoi.anh%}
+                <div class="ml-4 flex-shrink-0">
+                    <img src="{{noi_dung_de.cau_hoi.anh.url}}" alt="Image" class="max-w-2xl max-2xl   ">
+                </div>
+            {% endif %}
+            <br>
+            <div class="flex flex-col w-max h-auto border-2 border-r-gray-300">
+                <span class="font-bold text-green-300">Chuyên đề câu hỏi: {{noi_dung_de.cau_hoi.chuyenDe.ten_chuyen_de}}</span>
+                <span class="font-bold text-blue-500"> Lời giải của giáo viên </span>
+                <span class="font-thin"> {{noi_dung_de.cau_hoi.cach_giai}} </span>
+            </div>
+            <div class="border-t border-gray-600 opacity-50 w-full"></div>
+        </div>
+        {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL'%}
+        <div id="tab{{noi_dung_de.thu_tu_cau}}" class="tab-content h-full m-2 items-start border-2 border-black rounded-lg">
+            <div class="max-w-2xl flex-1">
+                <div class="border-spacing-1 flex flex-row">
+                    <span class="font-bold ml-2"> Câu {{noi_dung_de.thu_tu_cau}}.  </span>
+                    <span class="font-semibold ml-2">{{noi_dung_de.cau_hoi.noi_dung}}</span>
+                </div>
+                {% if noi_dung_de.cau_hoi.anh %}
+                <div class="ml-4 flex-shrink-0">
+                    <img src="{{noi_dung_de.cau_hoi.anh.url}}" alt="Image" class="w-52 h-56">
+                </div>
+                {% endif %}
+                <br>
+                <span class="font-bold">Đáp án của bạn:  </span>
+                {%if not value.bai_lam_list %}
+                <span class="font-mono ">  </span>
+                <br>
+                {% elif value.bai_lam_list.0.tinh_dung %}
+                <span class="font-mono text-green-400"> {{value.bai_lam_list.0.dap_an.noi_dung}} </span>
+                {% else %}
+                <span class="font-mono text-red-300"> {{value.bai_lam_list.0.dap_an.noi_dung}} </span>
+                {% endif %}
+                <div class="flex flex-col w-max h-auto border-dashed border-2 border-red-300"> 
+                    <span class="font-bold text-red-300">Đáp án đúng là: </span>
+                    {% for dap_an in value.dapan_list %}
+                        <label class="inline-flex items-center ml-6">
+                            <span class="ml-2">{{dap_an.noi_dung}}</span>
+                        </label>
+                    {% endfor %} 
+                </div>
+                <br>
+                <div class="flex flex-col w-max h-auto border-2 border-r-gray-300">
+                    <span class="font-bold text-green-300">Chuyên đề câu hỏi: {{noi_dung_de.cau_hoi.chuyenDe.ten_chuyen_de}}</span>
+                    <span class="font-bold text-blue-500"> Lời giải của giáo viên </span>
+                    <span class="font-thin"> {{noi_dung_de.cau_hoi.cach_giai}} </span>
+                </div>
+                <div class="border-t border-gray-600 opacity-50 w-full"></div>
+            </div>
+            
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <!--sub form-->
+    <div class="ml-2 mr-2 top-0 left-0 rounded-lg h-200 w-128 p-1 border border-gray-400 flex flex-col relative">
+        <!-- Nút bật chế độ toàn màn hình -->
+        <button id="fullscreenButton" class="absolute top-0 right-0 m-2 w-8 h-8 flex items-center justify-center border bg-gray-500 text-white rounded-full">
+            ⛶
+        </button>
+        </br>
+        <div class="flex flex-row items-center">
+            <span class="mr-2">Chỉ thị màu sắc:</span>
+            <button class="bg-gray-300 text-black px-2.5 py-1 m-1 border rounded-full ">0</button>
+            <span class="font-thin mr-3">Bỏ qua</span>
+            <button class="bg-green-600 text-white px-2.5 py-1 m-1 border rounded-full ">0</button>
+            <span class="font-thin mr-3">Đúng</span>
+            <button class="bg-red-400 text-black px-2.5 py-1 m-1 border rounded-full border-orange-500">0</button>
+            <span class="font-thin">Sai</span>
+        </div>
+        </br>
+        <div class="bg-black size-1 w-full"></div>
+        </br>
+        <span class="font-bold">Các câu hỏi trong phần thi </span>
+        </br>
+        <div class="col-span-5 ml-1">
+            {% for noi_dung_de, value in dictBLDA.items %}
+            {% if not value.bai_lam_list.0  %}
+            <button onclick="scrollToTab('{{noi_dung_de.thu_tu_cau}}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-gray-300 text-black px-2.5 py-1 m-1 border rounded-full">{{noi_dung_de.thu_tu_cau}}</button>
+            {% elif not value.bai_lam_list.0.tinh_dung %}
+            <button onclick="scrollToTab('{{noi_dung_de.thu_tu_cau}}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-red-400 text-black px-2.5 py-1 m-1 border rounded-full">{{noi_dung_de.thu_tu_cau}}</button>
+            {% else %}
+            <button onclick="scrollToTab('{{noi_dung_de.thu_tu_cau}}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-green-500 text-black px-2.5 py-1 m-1 border rounded-full">{{noi_dung_de.thu_tu_cau}}</button>
+            {% endif %}
+            
+            {% endfor %}
+        </div>
+    
+    </div>
+</div>
+
+<script>
+    document.getElementById('thoatButton').addEventListener('click', function() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Bạn có thực sự muốn thoát',
+            showCancelButton: true,
+            confirmButtonText: 'Thoát',
+            cancelButtonText: 'Hủy',
+            //footer: '<a href="{% url 'core:index' %}">về trang chủ </a>'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{% url 'core:index' %}";
+            } 
+            // Không cần làm gì nếu người dùng nhấn nút Hủy (stay on the same page)
+        });
+    });
+    function scrollToTab(tabId) {
+        // Find the tab content element
+        const tabContent = document.getElementById(`tab${tabId}`);
+
+        // Scroll to the tab content
+        tabContent.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'homepage/base.html' %} 
+{% block content %} 
+{% load static %}
+
+<!-- Sidebar -->
+<div id="sidebar" class="col-auto mt-12">
+    <form id="filterForm" method="GET" class="flex flex-wrap items-center justify-center space-x-24">
+        <!-- Trường Sách -->
+        <div class="flex items-center mb-2">
+            <label for="{{ form.sach.id_for_label }}" class="mr-2">Sách:</label>
+            {{ form.sach }}
+        </div>
+
+        <!-- Trường Khối -->
+        <div class="flex items-center mb-2">
+            <label for="{{ form.khoi.id_for_label }}" class="mr-2">Khối:</label>
+            {{ form.khoi }}
+        </div>
+
+        <!-- Trường Môn thi -->
+        <div class="flex items-center mb-2">
+            <label for="{{ form.mon_thi.id_for_label }}" class="mr-2">Môn thi:</label>
+            {{ form.mon_thi }}
+        </div>
+
+        <!-- Trường Chuyên đề -->
+        <div class="flex items-center mb-2">
+            <label for="{{ form.chuyen_de.id_for_label }}" class="mr-2">Chương:</label>
+            {{ form.chuyen_de }}
+        </div>
+
+        <!-- Trường Lý thuyết -->
+        <div class="flex items-center mb-2">
+            <label for="{{ form.ly_thuyet.id_for_label }}" class="mr-2">Bài:</label>
+            {{ form.ly_thuyet }}
+        </div>
+    </form>
+</div>
+<!-- Kết thúc Sidebar -->
+
+
+{% for dethi in listDeThiActive %}
+
+<div class="grid grid-cols-5 gap-2 items-center mb-12 border border-gray-800 rounded-lg bg-white p-4 mr-24 ml-24">
+    <!-- Logo -->
+    <div class="col-span-1">
+        <img src="{{ dethi.sach.anh.url }}" alt="Logo Sách" class="w-32 h-auto rounded-full m-2" />
+    </div>
+    <!-- Tên đề thi, loại đề thi và môn thi -->
+    <div class="col-span-2 rounded-lg border border-gray-800 p-4">
+        <div>
+            <p class="mb-2 w-full p-2 border border-gray-300 rounded flex justify-between items-center">
+                <span>Môn thi: {{ dethi.mon_thi.ten_mon }}</span>
+                <span class="ml-auto">Thời gian thi: {{ dethi.thoi_gia_thi }}</span>
+            </p>
+        </div>
+        <div class="mb-2">
+            <p class="w-full p-2 border border-gray-300 rounded">{{ dethi.ten_de_thi }}</p>
+        </div>
+        <div class="">
+            <p class="w-full p-2 border border-gray-300 rounded">Loại đề: {{ dethi.loai_de }}</p>
+        </div>
+    </div>
+    <!-- Chi tiết -->
+    <div class="col-span-1 flex justify-center">
+        <button class="w-full p-4 bg-blue-500 text-white rounded">Chi tiết</button>
+    </div>
+    <!-- Thi -->
+    <div class="col-span-1 flex justify-center">
+        <a href="{% url 'luyentap:dgtd_id' idde=dethi.id %}" class="w-full">
+            <button class="w-full p-3 bg-green-500 text-white rounded">Thi</button>
+        </a>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Bắt sự kiện thay đổi trên các trường select của form
+      const form = document.getElementById("filterForm");
+      const selectElements = form.querySelectorAll("select");
+
+      selectElements.forEach((select) => {
+          select.addEventListener("change", function () {
+              form.submit(); // Gửi form khi có thay đổi
+          });
+      });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% load static %}
+{% if noi_dung_de.cau_hoi.loai_cau_hoi == 'TN' %}
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
+    <div class="border-spacing-1 flex flex-row">
+        <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
+    </div>
+    <div class="flex flex-col">
+        {% for dap_an in dapans %}
+        <label class="inline-flex items-center ml-6">
+            <input type="radio" class="form-radio h-8 w-8 text-blue-600" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
+            <span class="ml-2 text-2xl">{{ dap_an.noi_dung }}</span>
+        </label>
+        {% endfor %}
+    </div>
+    {% if noi_dung_de.cau_hoi.anh %}
+    <div class="ml-4 flex-shrink-0">
+        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="max-w-full max-2xl" />
+    </div>
+    {% endif %}
+</div>
+{% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'DS' %}
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
+    <div class="border-spacing-1 flex flex-row">
+        <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
+    </div>
+    <div class="flex flex-col">
+        {% for dap_an in dapans %}
+        <label class="flex items-center">
+            <span class="text-2xl">{{ dap_an.noi_dung }}</span>
+            <div class="ml-auto flex items-center space-x-4">
+                <input type="checkbox" class="form-checkbox h-8 w-8 text-blue-600" id="checkbox-dung-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" onchange="updateLabel(this, true)" />
+                <label for="checkbox-dung-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" class="text-xl">Đúng</label>
+                <input type="checkbox" class="form-checkbox h-8 w-8 text-red-600" id="checkbox-sai-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" onchange="updateLabel(this, false)" />
+                <label for="checkbox-sai-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" class="text-xl">Sai</label>
+            </div>
+            <input type="checkbox" class="hidden" id="checkbox-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
+        </label>
+        {% endfor %}
+    </div>
+    {% if noi_dung_de.cau_hoi.anh %}
+    <div class="ml-4 flex-shrink-0">
+        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="w-52 h-56" />
+    </div>
+    {% endif %}
+</div>
+{% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL' %}
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
+    <div class="border-spacing-1 flex flex-row">
+        <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
+    </div>
+    {% if noi_dung_de.cau_hoi.anh %}
+    <div class="ml-4 flex-shrink-0">
+        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="w-52 h-56" />
+    </div>
+    {% endif %}
+</div>
+<div class="flex items-end">
+    <textarea id="inputTextArea{{ noi_dung_de.thu_tu_cau }}" rows="2" name="group{{ noi_dung_de.thu_tu_cau }}" class="py-2 w-32 px-2 border border-b-rose-500 outline-none rounded-xl m-3 focus:border-purple-800 transition-all resize-none"></textarea>
+</div>
+{% endif %}

@@ -1,0 +1,35 @@
+<div id="header">
+  <!-- Tầng 2-->
+  <div class="bg-white w-full h-70 flex items-center justify-between px-12">
+    <!-- Logo -->
+    <a>
+      <img src="https://icons.veryicon.com/png/o/miscellaneous/simple-one-line-icon/study-20.png" class="ml-12 h-14">
+    </a>
+    <!-- Logo profile, tên người dùng và nút đăng nhập/đăng xuất -->
+    <div class="flex items-center space-x-4">
+      {% if full_name %}
+        <img src="https://icons.veryicon.com/png/o/miscellaneous/1em/profile-24.png" alt="Profile Logo" class="w-10 h-10 rounded-full">
+        <span class="text-opacity-20 font-light text-2xl">{{ full_name }}</span>
+        <a href="{% url 'User:logout' %}" role="button" data-toggle="modal" style="padding-right:0">
+          <span class="bg-red-500 text-white py-3 px-5 rounded-full hover:bg-red-600">Đăng xuất</span>
+        </a>
+      {% else %}
+        <a href="{% url 'User:login' %}" role="button" data-toggle="modal" style="padding-right:0">
+          <span class="bg-green-500 text-white py-3 px-5 rounded-full hover:bg-green-600">Đăng nhập</span>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+  <!-- Tầng 3 -->
+  <div class="botheader bg-blue-800 w-full min-h-70 flex flex-row">
+  </div>
+  <!-- Navigation Bar -->
+<div class="bg-blue-800 text-white py-4">
+  <div class="container mx-auto flex justify-around items-center">
+      <a href="{% url 'core:index' %}" class="text-xl font-semibold">Trang chủ</a>
+      <a href="{% url 'core:luyenthi' %}" class="text-xl font-semibold">Luyện thi</a>
+      <a href="{% url 'core:dgtd' %}" class="text-xl font-semibold">Đánh giá tư duy</a>
+      <a href="{% url 'core:index' %}" class="text-xl font-semibold">Đánh giá năng lực</a>
+  </div>
+</div>
+</div>

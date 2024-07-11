@@ -1,0 +1,307 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+{% load static %}   
+<style>
+    /* Custom styles */
+    .float-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 50; /* Để đảm bảo nút luôn hiển thị phía trên */
+    }
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+<div class="">
+    <!--title-->
+    <div>
+    </br>
+    <div class="border-t border-gray-600 opacity-50 w-full"></div>
+    <div class="bg-white flex flex-col w-full h-24 items-center rounded-sm justify-center ">
+        <span class="font-bold text-2xl ">Môn thi: Lịch Sử</span>
+        <div class="flex flex-row justify-center items-center">
+        <span class="font-bold ">Tên đề thi</span>
+        <button class="ml-3 inline-block bg-green-300 text-white rounded-lg py-1 px-3 hover:bg-green-600" value="Thoát">Thoát</button>
+        </div>
+    </div>
+    <div class="border-t border-gray-600 opacity-50 w-full"></div>
+    </br>
+</div>
+    <!--main exam-->
+    <div class="flex flex-row">
+        
+        <!--main form-->
+        <div class="ml-3 mr-5 group top-0 left-0 h-auto min-h-96 rounded-lg w-full p-2 border border-gray-400  flex flex-col">
+            <div class="flex flex-row w-full h-14 border-spacing-1 m-2">
+                <ul class="flex border-b">
+                    <li class="-mb-px mr-1">
+                        <a href="#" class="tab-link bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold" data-tab="trac-nghiem">Trắc nghiệm</a>
+                    </li>
+                    <li class="mr-1">
+                        <a href="#" class="tab-link bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-700 font-semibold" data-tab="dung-sai">Chọn đúng sai</a>
+                    </li>
+                    <li class="mr-1">
+                        <a href="#" class="tab-link bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-700 font-semibold" data-tab="dien-tu">Điền từ</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="border-t border-gray-600 opacity-50 w-full"></div>
+            </br>
+            <div>
+                <div id="trac-nghiem" class="tab-content active p-4 bg-white border border-gray-300 rounded">
+                    <div class="flex items-start">
+                    <div class="max-w-2xl flex-1">
+                        
+                        <div class="border-spacing-1 flex flex-row" >
+                            <span class=" rounded-full bg-blue-600 text-white font-bold py-1.5 px-2.5"> 1 </span>
+                            <span class="font-bold  ml-2"> Năm mất chủ tịch Hồ Chí Minh</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" class="form-radio h-4 w-4 text-blue-600" name="group1" value="1">
+                                <span class="ml-2">A.1996</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" class="form-radio h-4 w-4 text-blue-600" name="group1" value="2">
+                                <span class="ml-2">B.1954</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6 mb-2">
+                                <input type="radio" class="form-radio h-4 w-4 text-blue-600" name="group1" value="3">
+                                <span class="ml-2">C.1968</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" class="form-radio h-4 w-4 text-blue-600" name="group1" value="4">
+                                <span class="ml-2">D.1969</span>
+                            </label>
+                        </div>
+                    </div>
+                        <div class="ml-4 flex-shrink-0">
+                            <img src="https://media.baobinhphuoc.com.vn/upload/news/8_2022/bh_07285731082022.jpg" alt="Image" class="w-52 h-56  ">
+                        </div>  
+                    </div>
+                    <div class="border-t border-gray-600 opacity-50 w-full"></div>
+                </br>
+                <div class="flex items-start">
+                    <div class="max-w-2xl flex-1">
+                        
+                        <div class="border-spacing-1 flex flex-row" >
+                            <span class=" rounded-full bg-blue-600 text-white font-bold py-1.5 px-2.5"> 2 </span>
+                            <span class="font-bold  ml-2"> Cuộc kháng chiến chống Mỹ, cứu nước (1954 - 1975) và cuộc vận động giải phóng
+                                 dân tộc (1939 - 1945) của nhân dân Việt Nam đều</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" class="form-radio h-4 w-4 text-blue-600" name="group2" value="1">
+                                <span class="ml-2">A.là thắng lợi sự kết hợp chặt chẽ giữa hậu phương và tiền tuyến.</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" class="form-radio h-4 w-4 text-blue-600" name="group2" value="2">
+                                <span class="ml-2">B.mở ra kỉ nguyên mới trong tiến trình phát triển của lịch sử dân tộc.</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6 mb-2">
+                                <input type="radio" class="form-radio h-4 w-4 text-blue-600" name="group2" value="3">
+                                <span class="ml-2">C.hoàn thành hai nhiêm vụ cách mạng: kháng chiến và kiến quốc.</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" class="form-radio h-4 w-4 text-blue-600" name="group2" value="4">
+                                <span class="ml-2">D.phát triển từ chiến tranh du kích lên tổng tiến công và khởi nghĩa.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-600 opacity-50 w-full"></div>
+                </br>
+                </div>
+
+                <div id="dung-sai" class="tab-content p-4 bg-white border border-gray-300 rounded">
+                    <div class="flex items-start">
+                        <div class="max-w-2xl flex-1">
+                            <span class="rounded-full bg-blue-600 text-white font-bold py-1.5 px-2.5"> 5 </span>
+                            <div class="border-spacing-1 flex flex-row">
+                                <span class="font-bold ml-2"> Hãy xác định các câu sau đây đúng hay sai về nội dung lịch sử.</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="inline-flex items-center ml-6">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="1">
+                                    <span class="ml-2">A.Học lịch sử để hiểu được cội nguồn dân tộc, biết được công lao, sự hi sinh to lớn của ông cha ta trong suốt lịch sử dựng nước và giữ nước.</span>
+                                </label>
+                                <label class="inline-flex items-center ml-6">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="2">
+                                    <span class="ml-2">B.Lịch Sử tìm hiểu về quá khứ nhưng không có nhiều giá trị đối với hiện tại.</span>
+                                </label>
+                                <label class="inline-flex items-center ml-6 mb-2">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="3">
+                                    <span class="ml-2">C.Học lịch sử để hiểu về quá khứ và xây dựng xã hội hiện tại văn minh.</span>
+                                </label>
+                                <label class="inline-flex items-center ml-6">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="4">
+                                    <span class="ml-2">D.Học lịch sử để biết sự tiến hoá của sinh vật trên Trái Đất.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-600 opacity-50 w-full"></div>
+                </br>
+                <div class="flex items-start">
+                    <div class="max-w-2xl flex-1">
+                        <span class="rounded-full bg-blue-600 text-white font-bold py-1.5 px-2.5"> 6 </span>
+                        <div class="border-spacing-1 flex flex-row">
+                            <span class="font-bold ml-2"> Hãy xác định câu đúng hoặc sai về các cuộc kháng chiến trong lịch sử 
+                                Việt Nam và giải thích ngắn gọn câu sai.</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="inline-flex items-center ml-6">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="1">
+                                <span class="ml-2">A.Việt Nam thuộc khu vực Đông Nam Á - khu vực nằm trên trục đường giao thông quan trọng kết nối châu Á và châu Đại Dương, Ấn Độ Dương và Thái Bình Dương nên trong suốt tiến trình lịch 
+                                    sử, Việt Nam luôn phải đối phó với nhiều thế lực ngoại xâm.</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="2">
+                                <span class="ml-2">B.Trong cuộc kháng chiến chống Tống (1075 - 1077), Triều Lý đã thực hiện kế sách "vườn 
+                                    không nhà trống", sau đó chủ động tập kích vào các căn cứ Khâm Châu, Liêm Châu, Ung Châu (Trung Quốc).</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6 mb-2">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="3">
+                                <span class="ml-2">C.Câu thơ: Đằng Giang tự cổ huyết do hồng (Sông Bạch Đằng xưa máu vẫn còn loang đỏ) gợi 
+                                    lại việc ba lần đánh bại quân xâm lược phương Bắc trên sông Bạch Đằng của dân tộc ta.</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="4">
+                                <span class="ml-2">D.Những người lãnh đạo, chỉ huy các cuộc kháng chiến chống ngoại xâm là: Hai Bà Trưng,
+                                     Ngô Quyền, Lê Hoàn, Lý Thường Kiệt, Trần Quốc Tuấn, Chu Văn An, Nguyễn Huệ,...</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" name="group3" value="4">
+                                <span class="ml-2">E.Quang Trung đã vận dụng nghệ thuật “đánh nhanh, thắng nhanh” một cách chủ động và đánh 
+                                    tan hàng chục vạn quân Thanh xâm lược chỉ trong thời gian ngắn.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-600 opacity-50 w-full"></div>
+                </br>
+                </div>
+                <div id="dien-tu" class="tab-content p-4 bg-white border border-gray-300 rounded">
+                    <div class="flex items-start">
+                        <div class="max-w-2xl flex-1">
+                            <span class=" rounded-full bg-blue-600 text-white font-bold py-1.5 px-2.5"> 15 </span>
+                            <div class="border-spacing-1 flex flex-row" >
+                                <span class="font-bold  ml-2"> Đây là sự kiện nào trong lịch sử?</span>
+                            </div>
+                            <div class="ml-4 flex-shrink-0">
+                                <img src="https://nghiencuuquocte.org/wp-content/uploads/2016/01/cholon.jpg" alt="Image"
+                                 class="min-w-52 min-h-56 max-h-96 max-w-96 ">
+                            </div>  
+                        </div>
+                        <textarea id="inputTextArea" rows="2" class="py-4 w-64 px-3 border border-b-rose-500 outline-none rounded-xl m-3
+                         focus:border-purple-800 transition-all resize-none"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--sub form-->
+        <div class="ml-2 top-0 left-0 rounded-lg w-60 p-1 border border-gray-400 justify-center flex flex-col">
+            <span class="font-bold ">Thí sinh: Nhật Porn</span>
+            </br>
+            <span class="font-bold ">Thời gian làm bài: 15:00</span>
+            </br>
+            <span class="font-thin">Thời gian làm bài còn lại: 3:15</span>
+            </br>
+            <button class="motion-safe:hover:scale-110 inline-block font-bold bg-white border-1 border-blue-600 text-blue-600 rounded-xl py-2 px-4 hover:bg-blue-600 hover:text-white"> NỘP BÀI </button>
+            </br>
+            <span class="text-yellow-500 font-semibold">Click chọn đáp án mà bạn thấy đúng. Với câu hỏi tự luận ngắn, nhập đáp án không quá
+                64 kí tự
+            </span>
+            <div class="bg-black size-1 w-full"></div>
+            </br>
+            <span class="font-bold">Phần trắc nghiệm </span>
+            </br>
+            <div class="col-span-5 ml-1">
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">1</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">2</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">3</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">4</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">5</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">6</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">7</button>
+            </div>
+            <br>
+            <span class="font-bold">Phần chọn đúng sai </span>
+            <br>
+            <div class="col-span-5 ml-1">
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">1</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">2</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">3</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">4</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">5</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">6</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">7</button>
+            </div>
+            <br>
+            <span class="font-bold">Phần tự luận ngắn </span>
+            <br>
+            <div class="col-span-5 ml-1">
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">1</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">2</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">3</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">4</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">5</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">6</button>
+                <button type="reset" class="bg-white text-black px-2 py-1 m-1 border rounded-md border-black ">7</button>
+            </div>
+            <br>
+        </div>
+    </div>
+</div>
+<!-- Floating button -->
+<a href="#" class="float-btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full">
+    Quay lại đầu trang
+</a>
+<script>
+    document.querySelector('.float-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.querySelectorAll('.tab-link').forEach(tab => {
+        tab.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            // Remove active class from all tab links
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.classList.remove('border-l', 'border-t', 'border-r', 'rounded-t', 'text-blue-700');
+                link.classList.add('text-blue-500');
+            });
+
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Add active class to the clicked tab link
+            tab.classList.add('border-l', 'border-t', 'border-r', 'rounded-t', 'text-blue-700');
+            tab.classList.remove('text-blue-500');
+
+            // Show the corresponding tab content
+            document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+        });
+    });
+    document.getElementById('inputTextArea').addEventListener('input', function() {
+        // Lấy giá trị hiện tại của textarea
+        let text = this.value;
+
+        // Nếu độ dài vượt quá 64 ký tự thì cắt bớt
+        if (text.length > 64) {
+            this.value = text.slice(0, 64);
+        }
+    });
+</script>
+{% endblock %}

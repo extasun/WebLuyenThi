@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+<section>
+    <div class="leaves">
+        <div class="set">
+            <div><img src="{% static 'images/login/leaf_01.png' %}"></div>
+            <div><img src="{% static 'images/login/leaf_02.png' %}"></div>
+            <div><img src="{% static 'images/login/leaf_03.png' %}"></div>
+            <div><img src="{% static 'images/login/leaf_04.png' %}"></div>
+            <div><img src="{% static 'images/login/leaf_01.png' %}"></div>
+            <div><img src="{% static 'images/login/leaf_02.png' %}"></div>
+            <div><img src="{% static 'images/login/leaf_03.png' %}"></div>
+            <div><img src="{% static 'images/login/leaf_04.png' %}"></div>
+        </div>
+    </div>
+    <img src="{% static 'images/login/bg.jpg' %}" class="bg">
+    <img src="{% static 'images/login/girl.png' %}" class="girl">
+    <img src="{% static 'images/login/trees.png' %}" class="trees">
+    <div class="login">
+        <h2>Đăng ký</h2>
+        <form action="{% url 'User:signup' %}" method="post">
+            {% csrf_token %}
+            <div class="inputBox">
+                <input type="text" name="username" placeholder="Username" class="form-control" required>
+            </div>
+            <div class="inputBox">
+                <input type="password" name="password" placeholder="Password" class="form-control" required>
+            </div>
+            <div class="inputBox">
+                <input type="text" name="first_name" placeholder="First Name" class="form-control" required>
+            </div>
+            <div class="inputBox">
+                <input type="text" name="last_name" placeholder="Last Name" class="form-control" required>
+            </div>
+            <div class="inputBox">
+                <input type="submit" value="Đăng ký" class="btn" id="btn">
+            </div>
+            <div class="group">
+                <a href="{% url 'User:login' %}">Đăng nhập</a>
+                <a href="#">Quên mật khẩu</a>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>
