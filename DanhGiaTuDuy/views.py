@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from datetime import timedelta
 from django.utils import timezone
-from .models import DeThi, NoiDungDe, LuotThi, BaiLam
+from .models import DeThi, NoiDungDe, LuotThi, BaiLam, KhoaHocNoiDung
 from .models import CauHoi, DapAn
 from django.db.models import Q
 from django.utils import timezone
@@ -27,7 +27,7 @@ class DGTD(LoginRequiredMixin, View):
             deThi = get_object_or_404(DeThi, id=idde)
             dict_cauhoi_list_dapan = dict()
             SetNoiDungDe = NoiDungDe.objects.filter(de_thi=deThi).order_by('thu_tu_cau')
-
+            khoa_hoc_noi_dung_list = KhoaHocNoiDung.objects.all()
             for noiDungDe in SetNoiDungDe:
                 SetDapAn = DapAn.objects.filter(cauHoi=noiDungDe.cau_hoi)
                 list_dapAn = list(SetDapAn)
@@ -40,7 +40,8 @@ class DGTD(LoginRequiredMixin, View):
                 'dictCHDA': dict_cauhoi_list_dapan,
                 'lenkeys': lenkeys,
                 'student': student,
-                'tthi': thoi_gian_thi
+                'tthi': thoi_gian_thi,
+                'khoa_hoc_noi_dung_list': khoa_hoc_noi_dung_list,
             }
             return render(request, 'quiz.html', content)
 

@@ -3,11 +3,42 @@ from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from User.models import StudentUser
+
+class DocHieuNoiDung(models.Model):
+    tieu_de = models.CharField(max_length=255, null=False, blank=False)
+    noi_dung = models.TextField()
+    anh = models.ImageField(upload_to='dochieu_images/', null=True, blank=True)
+    
+    def dh_photo(self):
+        if self.anh:
+            return mark_safe('<img src="{}" width="100" />'.format(self.anh.url))
+        return ''
+
+    dh_photo.short_description = 'Image'
+    dh_photo.allow_tags = True
+    
+    def __str__(self):
+        return self.tieu_de
+class KhoaHocNoiDung(models.Model):
+    tieu_de = models.CharField(max_length=255, null=False, blank=False)
+    noi_dung = models.TextField()
+    anh = models.ImageField(upload_to='khoahoc_images/', null=True, blank=True)
+    
+    def dh_photo(self):
+        if self.anh:
+            return mark_safe('<img src="{}" width="100" />'.format(self.anh.url))
+        return ''
+
+    dh_photo.short_description = 'Image'
+    dh_photo.allow_tags = True
+    
+    def __str__(self):
+        return self.tieu_de
 class CauHoi(models.Model):
     TRAC_NGHIEM = 'TN'
     DUNG_SAI = 'DS'
     TU_LUAN = 'TL'
-    KEO_THA = 'KT'  
+    KEO_THA = 'KT'
     TU_DUY_TOAN_HOC = 'TDTH'
     TU_DUY_DOC_HIEU = 'TDDH'
     TU_DUY_KHOA_HOC = 'TDKH'
@@ -32,6 +63,8 @@ class CauHoi(models.Model):
     phan_thi = models.CharField(max_length=4, choices=PHAN_THI_CHOICES, default=TU_DUY_TOAN_HOC)
     anh = models.ImageField(upload_to='cauhoi_images/', null=True, blank=True)
     cach_giai = models.TextField(default='')
+    
+    
     def ch_photo(self):
         if self.anh:
             return mark_safe('<img src="{}" width="100" />'.format(self.anh.url))
@@ -59,6 +92,7 @@ class DapAn(models.Model):
 
     def __str__(self):
         return self.noi_dung
+
 class DeThi(models.Model):
     DANH_GIA_TU_DUY = 'DGTD'
     LOAI_DE_CHOICES = [
@@ -67,6 +101,7 @@ class DeThi(models.Model):
     ten_de_thi = models.CharField(max_length=255, null=False, blank=False)
     loai_de = models.CharField(max_length=50, choices=LOAI_DE_CHOICES, default=DANH_GIA_TU_DUY)
     thoi_gian_thi = models.DurationField(default=timezone.timedelta(minutes=30))
+    doc_hieu_noi_dung = models.ForeignKey(DocHieuNoiDung, null=True, blank=True, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.ten_de_thi
@@ -76,6 +111,8 @@ class NoiDungDe(models.Model):
     cau_hoi = models.ForeignKey(CauHoi, on_delete=models.CASCADE)
     diem_so = models.FloatField(validators=[MinValueValidator(0.01), MaxValueValidator(10.00)])
     thu_tu_cau = models.IntegerField(validators=[MinValueValidator(1)])
+    doc_hieu_noi_dung = models.ForeignKey(DocHieuNoiDung, on_delete=models.SET_NULL, null=True, blank=True)
+    khoa_hoc_noi_dung = models.ForeignKey(KhoaHocNoiDung, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return self.cau_hoi.noi_dung
 

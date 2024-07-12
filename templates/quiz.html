@@ -57,6 +57,7 @@
                     </div>
             
                     <div id="default-styled-tab-content">
+                        <!-- Tư duy Toán Học -->
                         <div class="tab-content hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="tabTracNghiem" role="tabpanel" aria-labelledby="tracnghiem-tab">
                             {% for noi_dung_de, dapans in dictCHDA.items %}
                                 {% if noi_dung_de.cau_hoi.phan_thi == 'TDTH' %}
@@ -65,22 +66,60 @@
                             {% endfor %}
                         </div>
                     
+                        <!-- Tư duy Đọc hiểu -->
                         <div class="tab-content hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="tabDungSai" role="tabpanel" aria-labelledby="dungsai-tab">
-                            {% for noi_dung_de, dapans in dictCHDA.items %}
-                                {% if noi_dung_de.cau_hoi.phan_thi == 'TDDH' %}
-                                    {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %}
-                                {% endif %}
-                            {% endfor %}
+                         
+                                    <div class="flex">
+                                        <!-- Phần bên trái -->
+                                        <div class="w-1/2">
+                                            <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+                                                <div class="mb-4">
+                                                    <h3 class="text-lg font-semibold mb-2">{{ DeThi.doc_hieu_noi_dung.tieu_de }}</h3>
+                                                    <p class="text-gray-700 dark:text-gray-300" style="white-space: pre-wrap;">{{ DeThi.doc_hieu_noi_dung.noi_dung }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <!-- Phần bên phải -->
+                                        <div class="w-1/2">
+                                            {% for noi_dung_de, dapans in dictCHDA.items %}
+                                                {% if noi_dung_de.cau_hoi.phan_thi == 'TDDH' %}
+                                                    {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                        
+                                
                         </div>
                     
+                        <!-- Tư duy Khoa Học -->
                         <div class="tab-content hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="tabTuLuan" role="tabpanel" aria-labelledby="tuluan-tab">
-                            {% for noi_dung_de, dapans in dictCHDA.items %}
-                                {% if noi_dung_de.cau_hoi.phan_thi == 'TDKH' %}
-                                    {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %}
-                                {% endif %}
+                            {% for khoa_hoc_noi_dung in khoa_hoc_noi_dung_list %}
+                                <div class="flex">
+                                    <!-- Phần bên trái - Khoa Học Nội Dung -->
+                                    <div class="w-1/2">
+                                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+                                            <div class="mb-4">
+                                                <h3 class="text-lg font-semibold mb-2">{{ khoa_hoc_noi_dung.tieu_de }}</h3>
+                                                <p class="text-gray-700 dark:text-gray-300" style="white-space: pre-wrap;">{{ khoa_hoc_noi_dung.noi_dung }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Phần bên phải - Câu hỏi liên quan -->
+                                    <div class="w-1/2">
+                                        {% for noi_dung_de, dapans in dictCHDA.items %}
+                                            {% if noi_dung_de.khoa_hoc_noi_dung == khoa_hoc_noi_dung %}
+                                                {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
+                    
                     {% csrf_token %}
                 </form>
                 
@@ -175,7 +214,15 @@
                 const firstQuestion = document.querySelector(`${currentTab} .question-container`);
                 if (firstQuestion) {
                     currentQuestionId = firstQuestion.id;
-                    showQuestion(currentQuestionId);
+                    if (currentTab == '#tabDungSai') {
+                        showAllQuestion(); // Hiển thị tất cả các câu hỏi nếu là tab 'tabDungSai'
+                    }
+                    if (currentTab == '#tabTuLuan') {
+                        
+                    }
+                    if (currentTab == '#tabTracNghiem'){
+                        showQuestion(currentQuestionId); 
+                    }
                 }
             }
             // Hàm hiển thị câu hỏi
@@ -192,6 +239,15 @@
                 }
 
                 // Cập nhật trạng thái của các nút điều hướng câu hỏi
+                updateNavigationButtons();
+            }
+            // Hàm hiển thị tất cả các câu hỏi
+            function showAllQuestion() {
+                document.querySelectorAll(`${currentTab} .question-container`).forEach(question => {
+                    question.classList.remove('hidden');
+                });
+
+                // Cập nhật trạng thái của các nút điều hướng câu hỏi sau khi hiển thị tất cả
                 updateNavigationButtons();
             }
             // Hàm hiển thị tab hiện tại và câu hỏi
@@ -217,7 +273,7 @@
                 // Hiển thị tab được chọn và câu hỏi
                 if (tabId) {
                     showTab(tabId);
-                    showQuestion(questionId);
+                    if (tabId!='#tabDungSai') showQuestion(questionId);
                     
                 } else {
                     console.error('Không tìm thấy tab cho loại câu hỏi này.'+tabId);
