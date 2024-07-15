@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core',
     'compressor',
     'DanhGiaTuDuy',
+    'DanhGiaNangLuc',
 ]
 
 MIDDLEWARE = [

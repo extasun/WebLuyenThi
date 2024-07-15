@@ -1,0 +1,402 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+{% load static %} 
+<style>
+    .btn-default {
+        background-color: #fff;
+        color: #000;
+    }
+    .btn-selected {
+        background-color: #3490dc;
+        color: #000;
+    }
+    .btn-passed {
+        background-color: #f59e0b;
+        color: #000;
+    }
+</style>  
+<div class="">
+    <!--title-->
+    <div>
+    <div class="border-t border-gray-600 opacity-50 w-full"></div>
+    <div class="bg-gray-200 flex flex-col w-full h-24 items-center rounded-sm justify-center ">
+        <span class="font-bold text-2xl ">Môn thi: {{ DeThi.mon_thi }}</span>
+        <div class="flex flex-row justify-center items-center">
+
+        <button id="thoatButton" class="ml-3 inline-block bg-green-300 text-white rounded-lg py-1 px-3 hover:bg-green-600" value="Thoát">Thoát</button>
+        </div>
+    </div>
+    <div class="border-t border-gray-600 opacity-50 w-full"></div>
+</div>
+<div id="mainExamContent" class="bg-gray-200 flex flex-col h-full justify-between">
+    <br>
+    <div class="ml-12 flex flex-col justify-center h-1 text-2xl">
+        <span class="font-bold">{{ DeThi.ten_de_thi }}</span>
+    </div>
+    <br>
+
+    <!--main exam-->
+    <div class="flex flex-grow h-200 relative">
+
+        <!--main form-->
+        <div class="bg-white relative ml-12 mr-12 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+            <form id="answerForm" method="POST" action="{% url 'DanhGiaNangLuc:chamthi' %}">
+                <input type="hidden" id="DeThiInput" name="DeThiInput">
+                <input type="hidden" id="thoiGianInput" name="thoiGianInput">
+                <div class="border-spacing-1 flex flex-col">
+                    <span class="font-bold ml-2 text-2xl"> Phần 1: Ngôn ngữ </span>
+                    <span class="font-bold ml-2 text-2xl"> 1.1: Tiếng Việt </span>  
+                </div>
+                <div class="bg-white relative ml-2 mr-2 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+                    {% for noi_dung_de, dapans in dictCHDA.items %} 
+                        {% if noi_dung_de.cau_hoi.language == 'vi' %} 
+                        {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %} 
+                        {% endif %} 
+                    {% endfor %}
+                </div>
+                <div class="border-spacing-1 flex flex-row">
+                    <span class="font-bold ml-2 text-2xl"> 1.2: Tiếng Anh </span>  
+                </div>
+                <div class="bg-white relative ml-2 mr-2 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+                    {% for noi_dung_de, dapans in dictCHDA.items %} 
+                        {% if noi_dung_de.cau_hoi.language == 'en' %} 
+                        {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %} 
+                        {% endif %} 
+                    {% endfor %}
+                </div>
+                <div class="border-spacing-1 flex flex-col">
+                    <span class="font-bold ml-2 text-2xl"> Phần 2: Toán học, tư duy logic và phân tích số liệu </span>
+                    <span class="font-bold ml-2 text-2xl"> 2.1: Toán học </span>  
+                </div>
+                <div class="bg-white relative ml-2 mr-2 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+                    {% for noi_dung_de, dapans in dictCHDA.items %} 
+                        {% if noi_dung_de.cau_hoi.phan_2 == 'TH' %} 
+                        {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %} 
+                        {% endif %} 
+                    {% endfor %}
+                </div>
+                <div class="border-spacing-1 flex flex-row">
+                    <span class="font-bold ml-2 text-2xl"> 2.2: Tư duy logic </span>  
+                </div>
+                <div class="bg-white relative ml-2 mr-2 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+                    {% for noi_dung_de, dapans in dictCHDA.items %} 
+                        {% if noi_dung_de.cau_hoi.phan_2 == 'TDLG' %} 
+                        {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %} 
+                        {% endif %} 
+                    {% endfor %}
+                </div>
+                <div class="border-spacing-1 flex flex-row">
+                    <span class="font-bold ml-2 text-2xl"> 2.3: Phân tích số liệu </span>  
+                </div>
+                <div class="bg-white relative ml-2 mr-2 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+                    {% for noi_dung_de, dapans in dictCHDA.items %} 
+                        {% if noi_dung_de.cau_hoi.phan_2 == 'PTSL' %} 
+                        {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %} 
+                        {% endif %} 
+                    {% endfor %}
+                </div>
+                <div class="border-spacing-1 flex flex-col">
+                    <span class="font-bold ml-2 text-2xl">Phần 3: Giải quyết vấn đề</span>
+                    {% for subject in selected_subjects %}
+                        <span class="font-bold ml-2 text-2xl">3.{{ forloop.counter }}: {{ subject.1 }}</span>
+                        <div class="bg-white relative ml-2 mr-2 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+                            {% for noi_dung_de, dapans in dictCHDA.items %}
+                                {% if noi_dung_de.cau_hoi.subject == subject.0 %}
+                                    {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% csrf_token %} 
+                    
+                
+                                    
+                </form>
+            </div>
+            <!--sub form-->
+            <!-- Nút bật chế độ toàn màn hình -->
+            <div class="ml-2 mr-2 top-0 left-0 rounded-lg h-200 w-128 p-1 border border-gray-400 flex flex-col relative">
+                <button id="fullscreenButton" class="absolute top-0 right-0 m-2 w-8 h-8 flex items-center justify-center border bg-gray-500 text-white rounded-full">
+                    ⛶
+                </button>
+                        <span class="font-thin ">Thí sinh: {{student.first_name}} {{student.last_name}}</span>
+                        <br />
+                        <span class="font-thin ">Thời gian làm bài: {{DeThi.thoi_gia_thi}}</span>
+                        </br>
+                        <div class="flex flex-row justify-center">
+                            <span class="font-thin">Thời gian làm bài còn lại: </span>
+                            <div id="countdown" class="font-bold"></div>
+                        </div>
+                        <br>
+                        <div class="flex space-x-4 justify-center">
+                            <button id="pauseButton" class="w-64 inline-block font-bold border bg-blue-500 border-blue-500 text-white rounded-2xl py-2 px-4">
+                                TẠM DỪNG
+                            </button>
+                            <button id="submitBtn" class="w-64 inline-block font-bold border bg-orange-500 border-orange-500 text-white rounded-2xl py-2 px-4">
+                                NỘP BÀI
+                            </button>
+                        </div>
+                        <br>
+                        <div class="flex flex-row items-center">
+                            <span class="mr-2 text-2xl">Chỉ thị màu sắc:</span>
+                            <button class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">0</button>
+                            <button class="bg-blue-500 text-white px-4 py-2 m-1.5 border rounded-full">0</button>
+                            <button class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full border-orange-500">0</button>
+                        </div>
+                        <br>
+                        <div class="bg-black size-1 w-full"></div>
+                        <br>
+                        <span class="font-bold text-2xl">Các câu hỏi trong phần thi </span>
+                        <br>
+                        <div class="col-span-5 ml-1">
+                            {% for noi_dung_de in dictCHDA.keys %}
+                                <button onclick="scrollToQuestion('{{noi_dung_de.thu_tu_cau}}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">{{noi_dung_de.thu_tu_cau}}</button>
+                            {% endfor %}
+                        </div>
+                        <br>
+                        <div class="text-center mt-2">
+                            <p id="progress-text" class="font-bold text-2xl">Bạn đã hoàn thành 0/ tổng số câu</p>
+                        </div>
+                        <div class="w-full max-w-md mx-auto relative">
+                            <div id="progress-bar" class="h-6 w-full bg-gray-400 rounded-full overflow-hidden mt-2">
+                                <div id="progress-indicator" class="h-full bg-blue-600 rounded-full"></div>
+                            </div>
+                            <div id="progress-percent" class="text-center text-2xl mt-1 font-bold text-gray-600">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+
+<script>
+    const maxTabs = {{lenkeys}}; 
+    let currentTab = 1;
+    var totalQuestions = maxTabs;
+    function scrollToQuestion(questionNumber) {
+        var element = document.getElementById('question-' + questionNumber);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }   
+    scrollToQuestion(1);
+    
+   function updateColorIndicators(tabNumber) {
+    var buttons = document.querySelectorAll('.col-span-5 button[data-tab="' + tabNumber + '"]');
+    buttons.forEach(function(button) {
+        var isAnswered = false;
+        var inputs = document.querySelectorAll('input[name="group' + tabNumber + '"]');
+        inputs.forEach(function(input) {
+            if (input.checked) {
+                isAnswered = true;
+            }
+        });
+        if (isAnswered) {
+            button.classList.remove('bg-gray-300', 'border-gray-300', 'text-black');
+            button.classList.add('bg-blue-500', 'border-blue-500', 'text-white');
+        } else {
+            button.classList.remove('bg-blue-500', 'border-blue-500', 'text-white');
+            button.classList.add('bg-gray-300', 'border-gray-300', 'text-black');
+        }
+    });
+}
+
+    function updateColorIndicatorsForText(tabNumber) {
+        var button = document.querySelector(`.col-span-5 button[data-tab="${tabNumber}"]`);
+        if (!button) return;
+
+        var textarea = document.querySelector(`#inputTextArea${tabNumber}`);
+        if (!textarea) return;
+
+        var isAnswered = textarea.value.trim() !== '';
+        if (isAnswered) {
+            button.classList.remove('bg-gray-300', 'border-gray-300', 'text-black');
+            button.classList.add('bg-blue-500', 'border-blue-500', 'text-black');
+        } else {
+            button.classList.remove('bg-blue-500', 'border-blue-500', 'text-black');
+            button.classList.add('bg-gray-300', 'border-gray-300', 'text-black');
+        }
+    }
+    document.addEventListener('change', function(event) {
+        var target = event.target;
+        if (target.matches('input[type="radio"], input[type="checkbox"]')) {
+            var tabNumber = target.closest('.tab-content').id.replace('tab', '');
+            updateColorIndicators(tabNumber);    
+            updateProgress();
+        }
+    });
+
+    document.addEventListener('input', function(event) {
+        var target = event.target;
+        if (target.matches('textarea')) {
+            var tabNumber = target.id.replace('inputTextArea', '');
+            updateColorIndicatorsForText(tabNumber);
+            updateProgress();
+        }
+    });
+
+
+    function updateProgress() {
+        var answeredQuestions = calculateAnsweredQuestions();
+
+        var progressText = document.getElementById('progress-text');
+        progressText.textContent = 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions;
+
+        var progressPercentage = (answeredQuestions / totalQuestions) * 100;
+        var progressIndicator = document.getElementById('progress-indicator');
+        progressIndicator.style.width = progressPercentage + '%';
+
+        var progressPercent = document.getElementById('progress-percent');
+        progressPercent.textContent = Math.round(progressPercentage) + '%';
+    }
+
+    function calculateAnsweredQuestions() {
+    var answeredCount = 0;
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    if (checkboxes.length > 0) {    
+        answeredCount += 1;
+    }
+    var radios = document.querySelectorAll('input[type="radio"]:checked');
+    answeredCount += radios.length;
+
+        var textareas = document.querySelectorAll('textarea');
+        textareas.forEach(function(textarea) {
+            if (textarea.value.trim() !== '') {
+                answeredCount++;
+            }
+        });
+
+        return answeredCount;
+    }
+
+        updateProgress();
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            Swal.fire({
+                icon: 'question',
+                title: 'Bạn có chắc chắn muốn nộp bài?',
+                showCancelButton: true,
+                confirmButtonText: 'Nộp bài',
+                cancelButtonText: 'Hủy',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var deThiValue = '{{ DeThi.id }}'; 
+                    document.getElementById('DeThiInput').value = deThiValue;
+                    var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                    document.getElementById('thoiGianInput').value = thoiGianConLai;            
+                    document.getElementById('answerForm').submit();
+                   
+                }
+            });
+        });
+        document.getElementById('thoatButton').addEventListener('click', function() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Bạn có thực sự muốn thoát',
+                showCancelButton: true,
+                confirmButtonText: 'Thoát',
+                cancelButtonText: 'Hủy',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'core:index' %}";
+                } 
+        
+            });
+        });
+        var isPaused = false;
+        var countdownInterval;
+        var remainingTime;
+
+        function startCountdown(duration, display) {
+            var timer = duration, minutes, seconds;
+            countdownInterval = setInterval(function () {
+                if (!isPaused) {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    display.textContent = minutes + ":" + seconds;
+
+                    if (--timer === 0) {
+                        clearInterval(countdownInterval);
+                        var deThiValue = '{{ DeThi.id }}';  
+                        document.getElementById('DeThiInput').value = deThiValue;
+                        var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                        document.getElementById('thoiGianInput').value = thoiGianConLai;
+                        document.getElementById('answerForm').submit();
+                    }
+                }
+                remainingTime = timer; 
+            }, 1000);
+        }
+        document.getElementById('pauseButton').addEventListener('click', function() {
+            isPaused = true;
+            var answeredQuestions = calculateAnsweredQuestions();
+            Swal.fire({
+                icon: 'info',
+                title: 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions,
+                showCancelButton: true,
+                confirmButtonText: 'Tiếp tục làm bài',
+                cancelButtonText: 'Nộp bài',
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.cancel) {
+                    var deThiValue = '{{ DeThi.id }}';
+                    document.getElementById('DeThiInput').value = deThiValue;
+        
+                    var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                    document.getElementById('thoiGianInput').value = thoiGianConLai;
+                    document.getElementById('answerForm').submit();
+                } else {
+                    isPaused = false;
+                    startCountdown(remainingTime, document.querySelector('#countdown'));
+                    // Check if currently in fullscreen mode
+                    var mainExamContent = document.getElementById('mainExamContent');
+                    if (!document.fullscreenElement) {
+                        mainExamContent.requestFullscreen();
+                    }
+                }
+            });
+            stopCountdown();
+        });
+    window.addEventListener('beforeunload', function (event) {
+
+        var confirmationMessage = 'Bạn có chắc chắn muốn rời khỏi trang này!!!?';
+        event.returnValue = confirmationMessage;
+        return confirmationMessage;
+    });
+
+    window.onload = function () {
+        var Minutes = {{tthi}}, // 5 phút
+        display = document.querySelector('#countdown');
+    startCountdown(Minutes, display);
+
+    };
+    document.getElementById('fullscreenButton').addEventListener('click', function() {
+        var mainExamContent = document.getElementById('mainExamContent');
+        if (!document.fullscreenElement) {
+            mainExamContent.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    });
+
+    document.addEventListener('fullscreenchange', function() {
+        var mainExamContent = document.getElementById('mainExamContent');
+        if (document.fullscreenElement === mainExamContent) {
+            // Only show mainexamcontent in fullscreen
+            document.body.classList.add('fullscreen');
+            document.getElementById('contentWrapper').style.display = 'none'; // Hide other content
+        } else {
+        
+            document.body.classList.remove('fullscreen');
+            document.getElementById('contentWrapper').style.display = 'block'; // Show other content
+        }
+    });
+
+</script>
+{% endblock %}

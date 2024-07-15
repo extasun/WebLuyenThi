@@ -1,0 +1,29 @@
+<!-- select_subjects.html -->
+{% extends 'homepage/base.html' %}
+
+{% block content %}
+<div class="container mx-auto py-8">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4">Bài thi gồm có</h2>
+        <p>Ngôn ngữ (Tiếng Việt - Tiếng Anh)</p>
+        <p>Toán học, tư duy logic và phân tích số liệu</p>
+        <p>Giải quyết vấn đề</p>
+        <p class="mt-4 font-bold">Bạn hãy chọn 3 môn phía dưới:</p>
+        <form method="post" action="{% url 'DanhGiaNangLuc:select_subjects' idde=de_thi.id %}">
+            {% csrf_token %}
+            <div class="mt-4">
+                {% for subject in subjects %}
+                <label class="block">
+                    <input type="checkbox" name="mon_hoc" value="{{ subject.0 }}" class="mr-2"> {{ subject.1 }}
+                </label>
+                {% endfor %}
+            </div>
+            <p class="mt-4 text-red-500">Lưu ý: Với dạng câu hỏi điền đáp án vào chỗ trống, chỉ điền số nguyên và phân số dạng a/b.</p>
+            <div class="mt-6 flex justify-end">
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" onclick="window.history.back()">Hủy</button>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Bắt đầu thi</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

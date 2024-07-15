@@ -3,6 +3,7 @@ from django.views import View
 from MonHoc.models import MonHoc
 from LuyenTap.models import DeThi,CauHoi
 from DanhGiaTuDuy.models import DeThi as DGTD
+from DanhGiaNangLuc.models import DeThi as DGNL
 from .forms import DeThiFilterForm
 # Create your views here.
 class HomeView(View):
@@ -57,5 +58,11 @@ class DGTDView(View):
             'listDeThiDGTD': queryset,
         }
         return render(request, 'homepage/dgtd.html', context)
-
-        
+class DGNLView(View):
+    def get(self, request):
+        queryset = DGNL.objects.filter(loai_de='DGNL')
+        context = {
+            'listDeThiDGNL': queryset,
+        }
+        return render(request, 'homepage/dgnl.html', context)
+    
