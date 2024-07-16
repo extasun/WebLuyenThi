@@ -16,15 +16,12 @@
     </head>
     <body>
         {% include 'homepage/header.html' %} 
-        <div class="flex flex-col justify-between min-h-screen">
-            <div class="flex-1">
-                {% block content %}
-                <!-- Your content goes here -->
-                {% endblock content %}
-            </div>
-            {% include 'homepage/footer.html' %}
+        <div class="container mx-auto mt-4">
+            {% block content %}
+            {% endblock content %}
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+        {% include 'homepage/footer.html' %}
     </body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
 </html>

@@ -93,7 +93,7 @@ class NoiDungDeAdmin(admin.ModelAdmin):
     
     get_cau_hoi_tieu_de.short_description = 'Tiêu đề câu hỏi'
 
-class BaiLamInline(admin.TabularInline):
+class LuotThiInline(admin.TabularInline):
     model = BaiLam
     extra = 0
     readonly_fields = ('dap_an', 'tinh_dung')
@@ -113,7 +113,7 @@ class LuotThiAdmin(admin.ModelAdmin):
     readonly_fields = ['de_thi', 'nguoi_lam', 'diem_so', 'thoi_diem_thi', 'thoi_gian_hoan_thanh', 'so_cau_dung']
     list_filter = ['de_thi', 'nguoi_lam']
     search_fields = ['de_thi', 'nguoi_lam']
-    inlines = [BaiLamInline]
+    inlines = [LuotThiInline]
 
 class DocHieuNoiDungAdmin(admin.ModelAdmin):
     actions_selection_counter = True

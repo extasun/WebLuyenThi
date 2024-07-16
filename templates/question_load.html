@@ -1,13 +1,13 @@
 {% load static %}
 {% if noi_dung_de.cau_hoi.loai_cau_hoi == 'TN' %}
-<div id="question-{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
     <div class="border-spacing-1 flex flex-row">
         <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
     </div>
     <div class="flex flex-col">
         {% for dap_an in dapans %}
         <label class="inline-flex items-center ml-6">
-            <input type="radio" class="form-radio h-8 w-8 text-blue-600" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
+            <input type="radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:border-blue-500 focus:ring dark:bg-gray-700" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
             <span class="ml-2 text-2xl">{{ dap_an.noi_dung }}</span>
         </label>
         {% endfor %}
@@ -19,7 +19,7 @@
     {% endif %}
 </div>
 {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'DS' %}
-<div id="question-{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
     <div class="border-spacing-1 flex flex-row">
         <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
     </div>
@@ -44,7 +44,7 @@
     {% endif %}
 </div>
 {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL' %}
-<div id="question-{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
     <div class="border-spacing-1 flex flex-row">
         <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
     </div>
@@ -55,6 +55,6 @@
     {% endif %}
 </div>
 <div class="flex items-end">
-    <textarea id="inputTextArea{{ noi_dung_de.thu_tu_cau }}" rows="2" name="group{{ noi_dung_de.thu_tu_cau }}" class="py-2 w-32 px-2 border border-b-rose-500 outline-none rounded-xl m-3 focus:border-purple-800 transition-all resize-none"></textarea>
+    <textarea id="inputTextArea{{ noi_dung_de.thu_tu_cau }}" rows="1" name="group{{ noi_dung_de.thu_tu_cau }}" class="block p-2.5 w-32 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
 </div>
 {% endif %}

@@ -9,7 +9,7 @@
         <p>Toán học, tư duy logic và phân tích số liệu</p>
         <p>Giải quyết vấn đề</p>
         <p class="mt-4 font-bold">Bạn hãy chọn 3 môn phía dưới:</p>
-        <form method="post" action="{% url 'DanhGiaNangLuc:select_subjects' idde=de_thi.id %}">
+        <form id="subjectForm" method="post" action="{% url 'DanhGiaNangLuc:select_subjects' idde=de_thi.id %}">
             {% csrf_token %}
             <div class="mt-4">
                 {% for subject in subjects %}
@@ -21,9 +21,36 @@
             <p class="mt-4 text-red-500">Lưu ý: Với dạng câu hỏi điền đáp án vào chỗ trống, chỉ điền số nguyên và phân số dạng a/b.</p>
             <div class="mt-6 flex justify-end">
                 <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" onclick="window.history.back()">Hủy</button>
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Bắt đầu thi</button>
+                <button type="button" id="startExamButton" class="bg-green-500 text-white px-4 py-2 rounded">Bắt đầu thi</button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var startExamButton = document.getElementById('startExamButton');
+        var subjectForm = document.getElementById('subjectForm');
+        var checkboxes = document.querySelectorAll('input[type="checkbox"][name="mon_hoc"]');
+        
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var checkedBoxes = subjectForm.querySelectorAll('input[type="checkbox"]:checked');
+                if (checkedBoxes.length > 3) {
+                    alert('Bạn chỉ được chọn tối đa 3 môn học!');
+                    checkbox.checked = false; // Bỏ chọn checkbox vừa chọn khi vượt quá 3
+                }
+            });
+        });
+
+        startExamButton.addEventListener('click', function() {
+            var checkedBoxes = subjectForm.querySelectorAll('input[type="checkbox"]:checked');
+            if (checkedBoxes.length !== 3) {
+                alert('Vui lòng chọn đúng 3 môn học để tiếp tục!');
+                return;
+            }
+            subjectForm.submit();
+        });
+    });
+</script>
 {% endblock %}

@@ -30,6 +30,20 @@
     {% endfor %}
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var startExamButton = document.getElementById('startExamButton');
+        var subjectForm = document.getElementById('subjectForm');
 
+        startExamButton.addEventListener('click', function() {
+            var checkedBoxes = subjectForm.querySelectorAll('input[type="checkbox"]:checked');
+            if (checkedBoxes.length !== 3) {
+                alert('Vui lòng chọn đúng 3 môn học để tiếp tục!');
+                return;
+            }
+            subjectForm.submit();
+        });
+    });
+</script>
 
 {% endblock %}

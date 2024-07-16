@@ -287,26 +287,9 @@
 </div>
 
 <script>
-    document.getElementById('thoatButton').addEventListener('click', function() {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Oops...',
-            text: 'Bạn có thực sự muốn thoát',
-            showCancelButton: true,
-            confirmButtonText: 'Thoát',
-            cancelButtonText: 'Hủy',
-            //footer: '<a href="{% url 'core:index' %}">về trang chủ </a>'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = "{% url 'core:index' %}";
-            } 
-            // Không cần làm gì nếu người dùng nhấn nút Hủy (stay on the same page)
-        });
-    });
     function scrollToTab(tabId) {
         // Find the tab content element
         const tabContent = document.getElementById(`tab${tabId}`);
-
         // Scroll to the tab content
         tabContent.scrollIntoView({ behavior: 'smooth' });
     }

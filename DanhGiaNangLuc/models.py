@@ -76,6 +76,14 @@ class NoiDungDe(models.Model):
     cau_hoi = models.ForeignKey(CauHoi, on_delete=models.CASCADE)
     diem_so = models.FloatField(validators=[MinValueValidator(0.01), MaxValueValidator(10.00)], default=1)
     thu_tu_cau = models.IntegerField(validators=[MinValueValidator(1)])
+    def save(self, *args, **kwargs):
+        if not self.pk:  # chỉ áp dụng khi đối tượng chưa tồn tại trong database
+            last_item = NoiDungDe.objects.filter(de_thi=self.de_thi).order_by('-thu_tu_cau').first()
+            if last_item:
+                self.thu_tu_cau = last_item.thu_tu_cau + 1
+            else:
+                self.thu_tu_cau = 1
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.cau_hoi.noi_dung
 class LuotThi(models.Model):

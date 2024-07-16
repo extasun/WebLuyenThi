@@ -1,14 +1,14 @@
 from django.contrib import admin
 from .models import CauHoi, DapAn, DeThi, NoiDungDe, LuotThi, BaiLam
 from django.utils.html import format_html
-
+from django.db.models import Q
 class DapAnInline(admin.TabularInline):
     model = DapAn
     extra = 1
 
 class CauHoiAdmin(admin.ModelAdmin):
-    list_display = ('noi_dung', 'loai_cau_hoi', 'language', 'subject', 'ch_photo')
-    list_filter = ('loai_cau_hoi', 'language', 'subject')
+    list_display = ('noi_dung', 'loai_cau_hoi', 'language', 'subject', 'phan_2', 'ch_photo')
+    list_filter = ('loai_cau_hoi', 'language', 'subject', 'phan_2')
     inlines = [DapAnInline]
     readonly_fields = ('ch_photo',)
 
@@ -19,23 +19,102 @@ class CauHoiAdmin(admin.ModelAdmin):
 class NoiDungDeInline(admin.TabularInline):
     model = NoiDungDe
     extra = 1
+class Phan11Inline(admin.TabularInline):
+    model = NoiDungDe
+    extra = 1
+    fields = ('cau_hoi', 'diem_so')
+    readonly_fields = ('id',)
+    verbose_name = "Phần 1: Tiếng Việt"
+    verbose_name_plural = "Phần 1: Tiếng Việt"
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(cau_hoi__language='vi')
+class Phan12Inline(admin.TabularInline):
+    model = NoiDungDe
+    extra = 1
+    fields = ('cau_hoi', 'diem_so')
+    readonly_fields = ('id',)
+    verbose_name = "Phần 1: Tiếng Anh"
+    verbose_name_plural = "Phần 1: Tiếng Anh"
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(cau_hoi__language='en')
+class Phan21Inline(admin.TabularInline):
+    model = NoiDungDe
+    extra = 1
+    fields = ('cau_hoi', 'diem_so')
+    readonly_fields = ('id',)
+    verbose_name = "Phần 2: Toán Học"
+    verbose_name_plural = "Phần 2: Toán Học"
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(cau_hoi__phan_2='TH')
+class Phan22Inline(admin.TabularInline):
+    model = NoiDungDe
+    extra = 1
+    fields = ('cau_hoi', 'diem_so')
+    readonly_fields = ('id',)
+    verbose_name = "Phần 2: Tư duy logic"
+    verbose_name_plural = "Phần 2: Tư duy logic"
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(cau_hoi__phan_2='TDLG')
+class Phan23Inline(admin.TabularInline):
+    model = NoiDungDe
+    extra = 1
+    fields = ('cau_hoi', 'diem_so')
+    readonly_fields = ('id',)
+    verbose_name = "Phần 2: Phân tích số liệu"
+    verbose_name_plural = "Phần 2: Phân tích số liệu"
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(cau_hoi__phan_2='PTSL')
+class Phan3Inline(admin.TabularInline):
+    model = NoiDungDe
+    extra = 1
+    fields = ('cau_hoi', 'diem_so')
+    readonly_fields = ('id',)
+    verbose_name = "Phần 3: Giải quyết vấn đề"
+    verbose_name_plural = "Phần 3: Giải quyết vấn đề"
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(cau_hoi__subject__isnull=False)
 class DeThiAdmin(admin.ModelAdmin):
     list_display = ('ten_de_thi', 'loai_de', 'thoi_gian_thi')
-    inlines = [NoiDungDeInline]
+    inlines = [Phan11Inline, Phan12Inline, Phan21Inline, Phan22Inline, Phan23Inline, Phan3Inline]
 
-class BaiLamAdmin(admin.ModelAdmin):
-    list_display = ('luu_bai_thi', 'dap_an', 'noi_dung_de', 'tinh_dung')
-    list_filter = ('luu_bai_thi__de_thi', 'tinh_dung')
-    search_fields = ('luu_bai_thi__nguoi_lam__username', 'noi_dung_de__cau_hoi__noi_dung')
+class BaiLamInline(admin.TabularInline):
+    model = BaiLam
+    extra = 0
+    readonly_fields = ('dap_an', 'tinh_dung')
+    sortable_by = ['noi_dung_de']
+    can_delete = False
 
-    def dap_an(self, obj):
-        return format_html('<img src="{}" width="50"/>', obj.dap_an.anh.url) if obj.dap_an.anh else '-'
-    dap_an.short_description = 'Choice Image'
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False
+class LuotThiAdmin(admin.ModelAdmin):
+    actions_selection_counter = True
+    actions_on_bottom = False
+    actions_on_top = True
+    fields = ('de_thi', 'nguoi_lam', 'diem_so', 'thoi_diem_thi', 'thoi_gian_hoan_thanh', 'so_cau_dung')
+    list_display = ['id', 'de_thi', 'nguoi_lam', 'diem_so', 'thoi_diem_thi', 'thoi_gian_hoan_thanh']
+    list_display_links = ['id']
+    readonly_fields = ['de_thi', 'nguoi_lam', 'diem_so', 'thoi_diem_thi', 'thoi_gian_hoan_thanh', 'so_cau_dung']
+    list_filter = ['de_thi', 'nguoi_lam']
+    search_fields = ['de_thi', 'nguoi_lam']
+    inlines = [BaiLamInline]
+class DapAnAdmin(admin.ModelAdmin):
+    actions_selection_counter = True
+    actions_on_bottom = False
+    actions_on_top = True
+    fields = ('tinh_dung', 'noi_dung')
+    list_display = ['id', 'tinh_dung', 'noi_dung']
+    list_display_links = ['id', 'tinh_dung', 'noi_dung']
 
 admin.site.register(CauHoi, CauHoiAdmin)
-admin.site.register(DapAn)
+admin.site.register(DapAn, DapAnAdmin)
 admin.site.register(DeThi, DeThiAdmin)
 admin.site.register(NoiDungDe)
-admin.site.register(LuotThi)
-admin.site.register(BaiLam, BaiLamAdmin)
+admin.site.register(LuotThi, LuotThiAdmin)
+admin.site.register(BaiLam) 

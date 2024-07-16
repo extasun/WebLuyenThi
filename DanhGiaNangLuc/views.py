@@ -131,7 +131,7 @@ class ChamThi(View):
                         noi_dung_de_temp = SetNoiDungDe.filter(thu_tu_cau=question_number).first()
                         selected_answers[noi_dung_de_temp] = request.POST.getlist(key)
                     except NoiDungDe.DoesNotExist:
-                        print(f"Không tìm thấy NoiDungDe với thu_tu_cau={question_number}")
+                        pass
                     #selected_answers[SetNoiDungDe.get(thu_tu_cau=question_number)] = request.POST.getlist(key)
             try:
                 with transaction.atomic():
@@ -194,7 +194,7 @@ class ChamThi(View):
                                     else:
                                         SaveBai(luot_thi, da_sai, noi_dung_de, False)
             except Exception as e:
-                print(f'Đã xảy ra lỗi: {e}')        
+                pass
             luot_thi.diem_so = diem
             luot_thi.so_cau_dung = so_caudung
             luot_thi.thoi_gian_hoan_thanh = thoi_gian_hoan_thanh

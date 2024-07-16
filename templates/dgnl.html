@@ -15,35 +15,18 @@
         color: #000;
     }
 </style>  
-<div class="">
-    <!--title-->
-    <div>
-    <div class="border-t border-gray-600 opacity-50 w-full"></div>
-    <div class="bg-gray-200 flex flex-col w-full h-24 items-center rounded-sm justify-center ">
-        <span class="font-bold text-2xl ">Môn thi: {{ DeThi.mon_thi }}</span>
-        <div class="flex flex-row justify-center items-center">
 
-        <button id="thoatButton" class="ml-3 inline-block bg-green-300 text-white rounded-lg py-1 px-3 hover:bg-green-600" value="Thoát">Thoát</button>
-        </div>
-    </div>
-    <div class="border-t border-gray-600 opacity-50 w-full"></div>
-</div>
-<div id="mainExamContent" class="bg-gray-200 flex flex-col h-full justify-between">
-    <br>
-    <div class="ml-12 flex flex-col justify-center h-1 text-2xl">
-        <span class="font-bold">{{ DeThi.ten_de_thi }}</span>
-    </div>
-    <br>
-
+<div id="mainExamContent" class=" flex flex-col h-screen justify-between fullscreen bg-white">
     <!--main exam-->
-    <div class="flex flex-grow h-200 relative">
+    <div class="flex flex-grow relative">
 
         <!--main form-->
-        <div class="bg-white relative ml-12 mr-12 group top-0 left-0 rounded-lg w-full p-8 border border-gray-400 flex flex-col overflow-y-auto">
+        <div class="bg-white relative h-screen group top-0 left-0 rounded-lg w-full p-8  flex flex-col overflow-y-auto">
             <form id="answerForm" method="POST" action="{% url 'DanhGiaNangLuc:chamthi' %}">
                 <input type="hidden" id="DeThiInput" name="DeThiInput">
                 <input type="hidden" id="thoiGianInput" name="thoiGianInput">
                 <div class="border-spacing-1 flex flex-col">
+                    <span class="font-bold ml-2 text-4xl text-orange-400">{{ DeThi.ten_de_thi }}</span>
                     <span class="font-bold ml-2 text-2xl"> Phần 1: Ngôn ngữ </span>
                     <span class="font-bold ml-2 text-2xl"> 1.1: Tiếng Việt </span>  
                 </div>
@@ -108,90 +91,217 @@
                         </div>
                     {% endfor %}
                 </div>
+                
+                
                 {% csrf_token %} 
                     
                 
                                     
                 </form>
+        </div>
+        <!--sub form-->
+        <div class="ml-2 mr-2 top-0 left-0 rounded-lg bg-white h-200 w-128 p-1 border border-gray-400 flex flex-col relative overflow-y-auto">
+            <span class="font-thin">Thí sinh: {{student.first_name}} {{student.last_name}}</span>
+            <br />
+            <span class="font-thin">Thời gian làm bài: {{DeThi.thoi_gian_thi}}</span>
+            <div class="flex flex-row justify-center">
+                <span class="font-thin">Thời gian làm bài còn lại: </span>
+                <div id="countdown" class="font-bold"></div>
             </div>
-            <!--sub form-->
-            <!-- Nút bật chế độ toàn màn hình -->
-            <div class="ml-2 mr-2 top-0 left-0 rounded-lg h-200 w-128 p-1 border border-gray-400 flex flex-col relative">
-                <button id="fullscreenButton" class="absolute top-0 right-0 m-2 w-8 h-8 flex items-center justify-center border bg-gray-500 text-white rounded-full">
-                    ⛶
-                </button>
-                        <span class="font-thin ">Thí sinh: {{student.first_name}} {{student.last_name}}</span>
-                        <br />
-                        <span class="font-thin ">Thời gian làm bài: {{DeThi.thoi_gia_thi}}</span>
-                        </br>
-                        <div class="flex flex-row justify-center">
-                            <span class="font-thin">Thời gian làm bài còn lại: </span>
-                            <div id="countdown" class="font-bold"></div>
-                        </div>
-                        <br>
-                        <div class="flex space-x-4 justify-center">
-                            <button id="pauseButton" class="w-64 inline-block font-bold border bg-blue-500 border-blue-500 text-white rounded-2xl py-2 px-4">
-                                TẠM DỪNG
-                            </button>
-                            <button id="submitBtn" class="w-64 inline-block font-bold border bg-orange-500 border-orange-500 text-white rounded-2xl py-2 px-4">
-                                NỘP BÀI
-                            </button>
-                        </div>
-                        <br>
-                        <div class="flex flex-row items-center">
-                            <span class="mr-2 text-2xl">Chỉ thị màu sắc:</span>
-                            <button class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">0</button>
-                            <button class="bg-blue-500 text-white px-4 py-2 m-1.5 border rounded-full">0</button>
-                            <button class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full border-orange-500">0</button>
-                        </div>
-                        <br>
-                        <div class="bg-black size-1 w-full"></div>
-                        <br>
-                        <span class="font-bold text-2xl">Các câu hỏi trong phần thi </span>
-                        <br>
-                        <div class="col-span-5 ml-1">
-                            {% for noi_dung_de in dictCHDA.keys %}
-                                <button onclick="scrollToQuestion('{{noi_dung_de.thu_tu_cau}}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">{{noi_dung_de.thu_tu_cau}}</button>
-                            {% endfor %}
-                        </div>
-                        <br>
-                        <div class="text-center mt-2">
-                            <p id="progress-text" class="font-bold text-2xl">Bạn đã hoàn thành 0/ tổng số câu</p>
-                        </div>
-                        <div class="w-full max-w-md mx-auto relative">
-                            <div id="progress-bar" class="h-6 w-full bg-gray-400 rounded-full overflow-hidden mt-2">
-                                <div id="progress-indicator" class="h-full bg-blue-600 rounded-full"></div>
-                            </div>
-                            <div id="progress-percent" class="text-center text-2xl mt-1 font-bold text-gray-600">0%</div>
-                        </div>
-                    </div>
+            <br />
+            <div class="flex space-x-4 justify-center">
+                <button id="pauseButton" class="w-64 inline-block text-white bg-blue-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">TẠM DỪNG</button> 
+                <button id="submitBtn" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="w-64 inline-block text-white bg-blue-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    NỘP BÀI
+                    </button>
+            </div>
+            <br />
+            <div class="flex flex-row items-center">
+                <span class="mr-2 text-2xl">Chỉ thị màu sắc:</span>
+                <button class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">0</button>
+                <button class="bg-blue-500 text-white px-4 py-2 m-1.5 border rounded-full">0</button>
+                <button class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full border-orange-500">0</button>
+            </div>
+            <br />
+            <div class="bg-black size-1 w-full"></div>
+            <br />
+            <span class="font-bold text-2xl">Các câu hỏi trong phần thi </span>
+            <br />
+            <div class="col-span-5 ml-1">
+                <div class="border-spacing-1 flex flex-col">
+                    <span class="font-bold ml-2 text-2xl"> Phần 1: Ngôn ngữ </span> 
                 </div>
-                
+                {% for noi_dung_de, dapans in dictCHDA.items %}
+                    {% if noi_dung_de.cau_hoi.language == 'vi' or noi_dung_de.cau_hoi.language == 'en' %}
+                        <button onclick="scrollToQuestion('question-{{ noi_dung_de.thu_tu_cau }}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">{{ noi_dung_de.thu_tu_cau }}</button> 
+                    {% endif %}
+                {% endfor %}
             </div>
+            <div class="col-span-5 ml-1">
+                <div class="border-spacing-1 flex flex-col">
+                    <span class="font-bold ml-2 text-2xl"> Phần 2: Toán học, tư duy logic và phân tích số liệu </span> 
+                </div>
+                {% for noi_dung_de, dapans in dictCHDA.items %}
+                    {% if noi_dung_de.cau_hoi.phan_2 == 'TH' or noi_dung_de.cau_hoi.phan_2 == 'TDLG' or noi_dung_de.cau_hoi.phan_2 == 'PTSL' %}
+                        <button onclick="scrollToQuestion('question-{{ noi_dung_de.thu_tu_cau }}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">{{ noi_dung_de.thu_tu_cau }}</button> 
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="col-span-5 ml-1">
+                <div class="border-spacing-1 flex flex-col ">
+                    <span class="font-bold ml-2 text-2xl"> Phần 3: Giải quyết vấn đề </span> 
+                </div>
+                {% for subject in selected_subjects %}
+                    {% for noi_dung_de, dapans in dictCHDA.items %}
+                        {% if noi_dung_de.cau_hoi.subject == subject.0 %}
+                            <button onclick="scrollToQuestion('question-{{ noi_dung_de.thu_tu_cau }}')" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="bg-gray-300 text-black px-4 py-2 m-1.5 border rounded-full">{{ noi_dung_de.thu_tu_cau }}</button> 
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <br />
+            {% comment %} <div class="text-center mt-2">
+                <p id="progress-text" class="font-bold text-2xl">Bạn đã hoàn thành:</p>
+            </div> {% endcomment %}
+            <div class="flex justify-between mb-1">
+                <span id="progress-text" class="text-base font-medium text-blue-700 dark:text-white">Bạn đã hoàn thành</span>
+                <span id="progress-percent" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
+              </div>
+            <div class="w-full max-w-md mx-auto relative">
+                <div id="progress-bar" class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                    <div id="progress-indicator" class="bg-blue-600 h-2.5 rounded-full"></div>
+                </div>
+                {% comment %} <div id="progress-percent" class="text-center text-2xl mt-1 font-bold text-gray-600">0%</div> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+<div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn nộp bài?</h3>
+                <button id="confirmButton" data-modal-hide="popup-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                    Vâng, tôi chắc
+                </button>
+                <button data-modal-hide="popup-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Không, tôi muốn làm tiếp</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có muốn tạm dừng hoạt động?</h3>
+                <button id="continueButton" data-modal-hide="popup-modal" type="button" onclick="handleContinueButtonClick()" class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                    Tiếp tục
+                </button>
+                <button id="confirmButton1" data-modal-hide="popup-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Nộp bài</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-<script>
-    const maxTabs = {{lenkeys}}; 
-    let currentTab = 1;
-    var totalQuestions = maxTabs;
-    function scrollToQuestion(questionNumber) {
-        var element = document.getElementById('question-' + questionNumber);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
-    }   
-    scrollToQuestion(1);
+{% comment %} <script>
+   
+    function startCountdown(duration, display) {
+        var timer = duration,
+            minutes, seconds;
+        countdownInterval = setInterval(function() {
+            if (!isPaused) {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
     
-   function updateColorIndicators(tabNumber) {
-    var buttons = document.querySelectorAll('.col-span-5 button[data-tab="' + tabNumber + '"]');
-    buttons.forEach(function(button) {
-        var isAnswered = false;
-        var inputs = document.querySelectorAll('input[name="group' + tabNumber + '"]');
-        inputs.forEach(function(input) {
-            if (input.checked) {
-                isAnswered = true;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+    
+                display.textContent = minutes + ":" + seconds;
+    
+                if (--timer === 0) {
+                    clearInterval(countdownInterval);
+                    var deThiValue = '{{ DeThi.id }}';
+                    document.getElementById('DeThiInput').value = deThiValue;
+                    var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                    document.getElementById('thoiGianInput').value = thoiGianConLai;
+                    document.getElementById('answerForm').submit();
+                }
+            }
+            remainingTime = timer;
+        }, 1000);
+    }
+
+
+    document.getElementById('pauseButton').addEventListener('click', function() {
+        isPaused = true;
+        var answeredQuestions = calculateAnsweredQuestions();
+        Swal.fire({
+            icon: 'info',
+            title: 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions,
+            showCancelButton: true,
+            confirmButtonText: 'Tiếp tục làm bài',
+            cancelButtonText: 'Nộp bài',
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.cancel) {
+                var deThiValue = '{{ DeThi.id }}';
+                document.getElementById('DeThiInput').value = deThiValue;
+    
+                var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                document.getElementById('thoiGianInput').value = thoiGianConLai;
+                document.getElementById('answerForm').submit();
+            } else {
+                isPaused = false;
+                startCountdown(remainingTime, document.querySelector('#countdown'));
+                // Check if currently in fullscreen mode
+                var mainExamContent = document.getElementById('mainExamContent');
+                if (!document.fullscreenElement) {
+                    mainExamContent.requestFullscreen();
+                }
             }
         });
+        stopCountdown();
+    });
+    
+</script> {% endcomment %}
+<script>
+    var totalQuestions={{lenkeys}};
+    var countdownInterval;
+    var remainingTime;
+    var isPaused=false;
+    // Function to scroll to a specific question
+    function scrollToQuestion(questionId) {
+        // Get the question element by its ID
+        var questionElement = document.getElementById(questionId);
+        // Scroll to the question element
+        if (questionElement) {
+            questionElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+    function updateColorIndicators(tabNumber) {
+        var button = document.querySelector(`.col-span-5 button[data-tab="${tabNumber}"]`);
+        if (!button) return;
+    
+        var inputs = document.querySelectorAll(`input[name="group${tabNumber}"]`);
+        var isAnswered = Array.from(inputs).some(input => input.checked);
+    
         if (isAnswered) {
             button.classList.remove('bg-gray-300', 'border-gray-300', 'text-black');
             button.classList.add('bg-blue-500', 'border-blue-500', 'text-white');
@@ -199,34 +309,33 @@
             button.classList.remove('bg-blue-500', 'border-blue-500', 'text-white');
             button.classList.add('bg-gray-300', 'border-gray-300', 'text-black');
         }
-    });
-}
-
+    }
+    
     function updateColorIndicatorsForText(tabNumber) {
         var button = document.querySelector(`.col-span-5 button[data-tab="${tabNumber}"]`);
         if (!button) return;
-
+    
         var textarea = document.querySelector(`#inputTextArea${tabNumber}`);
         if (!textarea) return;
-
         var isAnswered = textarea.value.trim() !== '';
         if (isAnswered) {
             button.classList.remove('bg-gray-300', 'border-gray-300', 'text-black');
-            button.classList.add('bg-blue-500', 'border-blue-500', 'text-black');
+            button.classList.add('bg-blue-500', 'border-blue-500', 'text-white');
         } else {
-            button.classList.remove('bg-blue-500', 'border-blue-500', 'text-black');
+            button.classList.remove('bg-blue-500', 'border-blue-500', 'text-white');
             button.classList.add('bg-gray-300', 'border-gray-300', 'text-black');
         }
     }
+    
     document.addEventListener('change', function(event) {
         var target = event.target;
         if (target.matches('input[type="radio"], input[type="checkbox"]')) {
-            var tabNumber = target.closest('.tab-content').id.replace('tab', '');
-            updateColorIndicators(tabNumber);    
+            var tabNumber = target.closest('[data-tab]').getAttribute('data-tab');
+            updateColorIndicators(tabNumber);
             updateProgress();
         }
     });
-
+    
     document.addEventListener('input', function(event) {
         var target = event.target;
         if (target.matches('textarea')) {
@@ -235,8 +344,6 @@
             updateProgress();
         }
     });
-
-
     function updateProgress() {
         var answeredQuestions = calculateAnsweredQuestions();
 
@@ -269,134 +376,99 @@
 
         return answeredCount;
     }
-
-        updateProgress();
-        document.getElementById('submitBtn').addEventListener('click', function() {
-            Swal.fire({
-                icon: 'question',
-                title: 'Bạn có chắc chắn muốn nộp bài?',
-                showCancelButton: true,
-                confirmButtonText: 'Nộp bài',
-                cancelButtonText: 'Hủy',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var deThiValue = '{{ DeThi.id }}'; 
-                    document.getElementById('DeThiInput').value = deThiValue;
-                    var thoiGianConLai = document.getElementById('countdown').innerHTML;
-                    document.getElementById('thoiGianInput').value = thoiGianConLai;            
-                    document.getElementById('answerForm').submit();
-                   
-                }
-            });
-        });
-        document.getElementById('thoatButton').addEventListener('click', function() {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: 'Bạn có thực sự muốn thoát',
-                showCancelButton: true,
-                confirmButtonText: 'Thoát',
-                cancelButtonText: 'Hủy',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{% url 'core:index' %}";
-                } 
-        
-            });
-        });
-        var isPaused = false;
-        var countdownInterval;
-        var remainingTime;
-
-        function startCountdown(duration, display) {
-            var timer = duration, minutes, seconds;
-            countdownInterval = setInterval(function () {
-                if (!isPaused) {
-                    minutes = parseInt(timer / 60, 10);
-                    seconds = parseInt(timer % 60, 10);
-
-                    minutes = minutes < 10 ? "0" + minutes : minutes;
-                    seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                    display.textContent = minutes + ":" + seconds;
-
-                    if (--timer === 0) {
-                        clearInterval(countdownInterval);
-                        var deThiValue = '{{ DeThi.id }}';  
-                        document.getElementById('DeThiInput').value = deThiValue;
-                        var thoiGianConLai = document.getElementById('countdown').innerHTML;
-                        document.getElementById('thoiGianInput').value = thoiGianConLai;
-                        document.getElementById('answerForm').submit();
-                    }
-                }
-                remainingTime = timer; 
-            }, 1000);
-        }
-        document.getElementById('pauseButton').addEventListener('click', function() {
-            isPaused = true;
-            var answeredQuestions = calculateAnsweredQuestions();
-            Swal.fire({
-                icon: 'info',
-                title: 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions,
-                showCancelButton: true,
-                confirmButtonText: 'Tiếp tục làm bài',
-                cancelButtonText: 'Nộp bài',
-            }).then((result) => {
-                if (result.dismiss === Swal.DismissReason.cancel) {
+    function startCountdown(duration, display) {
+        var timer = duration,
+            minutes, seconds;
+            countdownInterval = setInterval(function() {
+            if (!isPaused) {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+    
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+    
+                display.textContent = minutes + ":" + seconds;
+    
+                if (--timer === 0) {
+                    clearInterval(countdownInterval);
                     var deThiValue = '{{ DeThi.id }}';
                     document.getElementById('DeThiInput').value = deThiValue;
-        
                     var thoiGianConLai = document.getElementById('countdown').innerHTML;
                     document.getElementById('thoiGianInput').value = thoiGianConLai;
                     document.getElementById('answerForm').submit();
-                } else {
-                    isPaused = false;
-                    startCountdown(remainingTime, document.querySelector('#countdown'));
-                    // Check if currently in fullscreen mode
-                    var mainExamContent = document.getElementById('mainExamContent');
-                    if (!document.fullscreenElement) {
-                        mainExamContent.requestFullscreen();
-                    }
                 }
-            });
-            stopCountdown();
-        });
-    window.addEventListener('beforeunload', function (event) {
-
-        var confirmationMessage = 'Bạn có chắc chắn muốn rời khỏi trang này!!!?';
-        event.returnValue = confirmationMessage;
-        return confirmationMessage;
-    });
-
-    window.onload = function () {
-        var Minutes = {{tthi}}, // 5 phút
-        display = document.querySelector('#countdown');
-    startCountdown(Minutes, display);
-
+            }
+            remainingTime = timer;
+        }, 1000);
+    }
+    window.onload = function() {
+        var Minutes = {{tthi}},
+            display = document.querySelector('#countdown');
+        startCountdown(Minutes, display);
     };
-    document.getElementById('fullscreenButton').addEventListener('click', function() {
-        var mainExamContent = document.getElementById('mainExamContent');
-        if (!document.fullscreenElement) {
-            mainExamContent.requestFullscreen();
+    document.getElementById('confirmButton').addEventListener('click', function() {
+        var deThiValue = '{{ DeThi.id }}';
+        document.getElementById('DeThiInput').value = deThiValue;
+        
+        var thoiGianConLai = document.getElementById('countdown').innerHTML;
+        document.getElementById('thoiGianInput').value = thoiGianConLai;
+        
+        document.getElementById('answerForm').submit();
+    });
+    document.getElementById('confirmButton1').addEventListener('click', function() {
+        var deThiValue = '{{ DeThi.id }}';
+        document.getElementById('DeThiInput').value = deThiValue;
+        
+        var thoiGianConLai = document.getElementById('countdown').innerHTML;
+        document.getElementById('thoiGianInput').value = thoiGianConLai;
+        
+        document.getElementById('answerForm').submit();
+    });
+    
+    document.getElementById('pauseButton').addEventListener('click', function() {
+        isPaused=true;
+        var answeredQuestions = calculateAnsweredQuestions();
+        Swal.fire({
+            icon: 'info',
+            title: 'Bạn đã hoàn thành ' + answeredQuestions + '/' + totalQuestions,
+            showCancelButton: true,
+            confirmButtonText: 'Tiếp tục làm bài',
+            cancelButtonText: 'Nộp bài',
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.cancel) {
+                var deThiValue = '{{ DeThi.id }}';
+                document.getElementById('DeThiInput').value = deThiValue;
+    
+                var thoiGianConLai = document.getElementById('countdown').innerHTML;
+                document.getElementById('thoiGianInput').value = thoiGianConLai;
+                document.getElementById('answerForm').submit();
+            } else {
+                isPaused = false;
+                startCountdown(remainingTime, document.querySelector('#countdown'));
+            }
+        });
+        stopCountdown();
+    });
+    function updateLabel(checkbox, isCorrect) {
+        var checkboxId = checkbox.id;
+        var otherCheckboxId = checkboxId.startsWith('checkbox-dung') ? checkboxId.replace('checkbox-dung', 'checkbox-sai') : checkboxId.replace('checkbox-sai', 'checkbox-dung');
+        var otherCheckbox = document.querySelector('#' + otherCheckboxId);
+        var hiddenCheckboxId = checkboxId.replace('checkbox-dung-', '').replace('checkbox-sai-', '');
+        var hiddenCheckbox = document.getElementById('checkbox-' + hiddenCheckboxId);
+    
+        if (checkbox.checked) {
+            if (otherCheckbox) {
+                otherCheckbox.checked = false; // Uncheck the other checkbox
+            }
+            if (hiddenCheckbox) {
+                hiddenCheckbox.checked = isCorrect; // Check hidden checkbox if "Đúng", uncheck if "Sai"
+            }
         } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
+            if (hiddenCheckbox) {
+                hiddenCheckbox.checked = false; // Uncheck hidden checkbox if neither "Đúng" nor "Sai" is checked
             }
         }
-    });
-
-    document.addEventListener('fullscreenchange', function() {
-        var mainExamContent = document.getElementById('mainExamContent');
-        if (document.fullscreenElement === mainExamContent) {
-            // Only show mainexamcontent in fullscreen
-            document.body.classList.add('fullscreen');
-            document.getElementById('contentWrapper').style.display = 'none'; // Hide other content
-        } else {
-        
-            document.body.classList.remove('fullscreen');
-            document.getElementById('contentWrapper').style.display = 'block'; // Show other content
-        }
-    });
-
+    }
+    
 </script>
 {% endblock %}
