@@ -1,8 +1,8 @@
 from django.db import models
-from MonHoc.models import MonHoc, Sach, Khoi
+from MonHoc.models import MonHoc, Sach, Khoi, ChuyenDe
 from datetime import timedelta
 from django.utils import timezone
-from NoiDung.models import CauHoi, DapAn
+from NoiDung.models import CauHoi, DapAn, LyThuyet
 from User.models import StudentUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
@@ -21,12 +21,14 @@ class DeThi(models.Model):
     ]
     ten_de_thi = models.CharField(max_length=255, null=False, blank=False)
     mon_thi = models.ForeignKey(MonHoc, on_delete=models.CASCADE)
-   # nguoi_ra_de = models.ForeignKey(TeacherUser, on_delete=models.CASCADE)
     loai_de = models.CharField(max_length=50, choices=LOAI_DE_CHOICES, default=DE_KIEM_TRA_GIUA_KI)
     sach = models.ForeignKey(Sach, null=True, on_delete=models.CASCADE)
     khoi = models.ForeignKey(Khoi, on_delete=models.CASCADE, null=True)
+    chuyen_de = models.ForeignKey(ChuyenDe, on_delete=models.CASCADE, null=True)
+    lyThuyet = models.ForeignKey(LyThuyet, on_delete=models.CASCADE, null=True, blank=True)
     trang_thai = models.BooleanField(default=False)
-    thoi_gia_thi = models.DurationField(default=timedelta(minutes=30))
+    ma_de = models.CharField(max_length=50, unique=True, default=timezone.now)
+    thoi_gian_thi = models.DurationField(default=timedelta(minutes=30))
     def __str__(self):
         return self.ten_de_thi
 class NoiDungDe(models.Model):

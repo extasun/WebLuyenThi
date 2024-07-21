@@ -1,14 +1,24 @@
 {% load static %}
 {% if noi_dung_de.cau_hoi.loai_cau_hoi == 'TN' %}
 <div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
-    <div class="border-spacing-1 flex flex-row">
-        <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
+    <div class="border-spacing-1 flex flex-row items-center">
+        <span class="font-medium ml-2 text-xl">
+            <span class="bg-gray-200 rounded-full text-center inline-block w-10 h-10 leading-10 font-bold">
+                {{ noi_dung_de.thu_tu_cau }}
+            </span>
+            <span class="font-normal ml-2">
+                {{ noi_dung_de.cau_hoi.noi_dung }}
+            </span>
+        </span>
     </div>
     <div class="flex flex-col">
         {% for dap_an in dapans %}
-        <label class="inline-flex items-center ml-6">
-            <input type="radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:border-blue-500 focus:ring dark:bg-gray-700" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
+        <label class="inline-flex items-center ml-16">
+            <input type="radio" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" class="hidden peer" />
+            <span class="w-6 h-6 flex items-center justify-center rounded-full border peer-checked:bg-blue-700 peer-checked:border-blue-700 bg-gray-300 border-gray-300"> 
+            </span>
             <span class="ml-2 text-2xl">{{ dap_an.noi_dung }}</span>
+            
         </label>
         {% endfor %}
     </div>
@@ -20,17 +30,24 @@
 </div>
 {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'DS' %}
 <div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
-    <div class="border-spacing-1 flex flex-row">
-        <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
+    <div class="border-spacing-1 flex flex-row items-center">
+        <span class="font-medium ml-2 text-xl">
+            <span class="bg-gray-200 rounded-full text-center inline-block w-10 h-10 leading-10 font-bold">
+                {{ noi_dung_de.thu_tu_cau }}
+            </span>
+            <span class="font-normal ml-2">
+                {{ noi_dung_de.cau_hoi.noi_dung }}
+            </span>
+        </span>
     </div>
     <div class="flex flex-col">
         {% for dap_an in dapans %}
-        <label class="flex items-center">
+        <label class="flex items-center ml-16">
             <span class="text-2xl">{{ dap_an.noi_dung }}</span>
             <div class="ml-auto flex items-center space-x-4">
-                <input type="checkbox" class="form-checkbox h-8 w-8 text-blue-600" id="checkbox-dung-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" onchange="updateLabel(this, true)" />
+                <input type="checkbox" class="form-checkbox h-8 w-8 text-blue-600" id="checkbox-dung-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" onchange="updateLabel(this, true)" />
                 <label for="checkbox-dung-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" class="text-xl">Đúng</label>
-                <input type="checkbox" class="form-checkbox h-8 w-8 text-red-600" id="checkbox-sai-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" onchange="updateLabel(this, false)" />
+                <input type="checkbox" class="form-checkbox h-8 w-8 text-red-600" id="checkbox-sai-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" onchange="updateLabel(this, false)" />
                 <label for="checkbox-sai-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" class="text-xl">Sai</label>
             </div>
             <input type="checkbox" class="hidden" id="checkbox-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
@@ -43,10 +60,25 @@
     </div>
     {% endif %}
 </div>
-{% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL' %}
+{% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'CB' %}
 <div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
-    <div class="border-spacing-1 flex flex-row">
-        <span class="font-bold ml-2 text-2xl"> Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }} </span>
+    <div class="border-spacing-1 flex flex-row items-center">
+        <span class="font-medium ml-2 text-xl">
+            <span class="bg-gray-200 rounded-full text-center inline-block w-10 h-10 leading-10 font-bold">
+                {{ noi_dung_de.thu_tu_cau }}
+            </span>
+            <span class="font-normal ml-2">
+                {{ noi_dung_de.cau_hoi.noi_dung }}
+            </span>
+        </span>
+    </div>
+    <div class="flex flex-col ml-16">
+        {% for dap_an in dapans %}
+        <label class="flex items-center">
+            <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" id="checkbox-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
+            <span class="ml-2 text-2xl">{{ dap_an.noi_dung }}</span>
+        </label>
+        {% endfor %}
     </div>
     {% if noi_dung_de.cau_hoi.anh %}
     <div class="ml-4 flex-shrink-0">
@@ -54,7 +86,29 @@
     </div>
     {% endif %}
 </div>
-<div class="flex items-end">
-    <textarea id="inputTextArea{{ noi_dung_de.thu_tu_cau }}" rows="1" name="group{{ noi_dung_de.thu_tu_cau }}" class="block p-2.5 w-32 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+{% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL' %}
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
+    <div class="flex items-center space-x-4">
+        <!-- Phần câu hỏi -->
+        <div class="flex items-center space-x-2">
+            <span class="bg-gray-200 rounded-full text-center inline-block w-10 h-10 leading-10 font-bold flex items-center justify-center">
+                {{ noi_dung_de.thu_tu_cau }}
+            </span>
+            <span class="font-normal text-xl">
+                {{ noi_dung_de.cau_hoi.noi_dung }}
+            </span>
+        </div>
+    
+        <!-- Ô đáp án -->
+        <textarea id="inputTextArea{{ noi_dung_de.thu_tu_cau }}" name="group{{ noi_dung_de.thu_tu_cau }}" class="w-32 h-10 border-gray-300 shadow-xl outline-none rounded-xl transition-all resize-none overflow-hidden"></textarea>
+    </div>
+    {% if noi_dung_de.cau_hoi.anh %}
+    <div class="ml-4 flex-shrink-0">
+        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="w-52 h-56" />
+    </div>
+    {% endif %}
 </div>
+{% comment %} <div class="flex items-end">
+    <textarea id="inputTextArea{{noi_dung_de.thu_tu_cau}}" rows="2" name="group{{noi_dung_de.thu_tu_cau}}" class="py-4 w-64 px-3 border border-b-rose-500 outline-none rounded-xl m-3 focus:border-purple-800 transition-all resize-none"></textarea>
+</div> {% endcomment %}
 {% endif %}

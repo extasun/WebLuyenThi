@@ -39,7 +39,7 @@ class DGTD(LoginRequiredMixin, View):
                 dict_cauhoi_list_dapan[noiDungDe] = list_dapAn
             print(dict_cauhoi_DT)
             lenkeys = len(dict_cauhoi_list_dapan)
-            thoi_gian_thi = int(deThi.thoi_gia_thi.seconds)
+            thoi_gian_thi = int(deThi.thoi_gian_thi.seconds)
             content = {
                 'DeThi': deThi, 
                 'dictCHDA': dict_cauhoi_list_dapan,
@@ -48,7 +48,7 @@ class DGTD(LoginRequiredMixin, View):
                 'student': student,
                 'tthi': thoi_gian_thi
             }
-            return render(request, 'dgtd.html', content)
+            return render(request, 'luyenthi.html', content)
 
 def SaveBai(luotthix, dapan, noidungde, tinhdung):
         bai_lam = BaiLam(
@@ -73,7 +73,7 @@ class ChamThi(View):
             ma_de_thi = request.POST.get('DeThiInput', None) 
             de_thi_x = get_object_or_404(DeThi, id=int(ma_de_thi))   
             thoi_gian_con_lai_str = request.POST.get('thoiGianInput', None)     
-            thoi_gian_thi = de_thi_x.thoi_gia_thi
+            thoi_gian_thi = de_thi_x.thoi_gian_thi
             if thoi_gian_con_lai_str:
                 # Tách chuỗi thoi_gian_con_lai theo dấu hai chấm
                 parts = thoi_gian_con_lai_str.split(':') 

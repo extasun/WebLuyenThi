@@ -13,14 +13,15 @@ class DeThiDisplay(admin.ModelAdmin):
     actions_selection_counter = True
     actions_on_bottom = False
     actions_on_top = True
-    fields = ('ten_de_thi', 'mon_thi', 'thoi_gia_thi', 'sach', 'loai_de', 'khoi')
+    fields = ('ma_de', 'ten_de_thi', 'mon_thi', 'thoi_gian_thi', 'sach', 'loai_de', 'khoi', 'chuyen_de', 'lyThuyet')
     list_display = [
         'id',
         'ten_de_thi', 
         'mon_thi', 
-        'thoi_gia_thi',
+        'thoi_gian_thi',
         'loai_de',
         'sach',
+        'chuyen_de',
     ]
     list_display_links = [
         'ten_de_thi',    
@@ -28,7 +29,7 @@ class DeThiDisplay(admin.ModelAdmin):
     list_filter = [
         'ten_de_thi', 
         'mon_thi', 
-        'thoi_gia_thi',
+        'thoi_gian_thi',
         'loai_de',
         'sach',
     ]

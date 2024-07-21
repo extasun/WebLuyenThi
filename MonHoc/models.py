@@ -26,7 +26,6 @@ class MonHoc(models.Model):
     mo_ta = models.TextField(default='')
     def __str__(self):
         return self.ten_mon
-# class  Chuyên Dề
 class ChuyenDe(models.Model):
     ten_chuyen_de = models.CharField(max_length=255, null=False, blank=False)
     mo_ta = models.TextField(default='')

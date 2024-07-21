@@ -1,0 +1,108 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+{% load static %} 
+    <script>
+      function scrollToTab(tabId) {
+          const tabContent = document.getElementById(tabId);
+          if (tabContent) {
+              tabContent.scrollIntoView({ behavior: 'smooth' });
+          }
+      }
+    </script>
+    <div class="flex max-w-6xl mx-auto p-5 bg-gray-100">
+      <div class="flex-2 mr-5">
+        <div id="tab1" class="bg-white rounded-lg shadow-lg p-5 mb-5 h-screen overflow-auto">
+
+          <h2 class="text-2xl text-blue-700 mb-4">Phần 1: Tư duy định lượng</h2>
+          <div class="mb-2">
+            <p class="text-lg">1. Nhà A cách nhà B bởi nhà C và nhà A cài mặt trời bao nhiêu km</p>
+          </div>
+          <ul class="list-none p-0">
+            <li class="mb-1"><input type="radio" name="q1" id="q1a" class="mr-2" /><label for="q1a" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q1" id="q1b" class="mr-2" /><label for="q1b" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q1" id="q1c" class="mr-2" /><label for="q1c" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q1" id="q1d" class="mr-2" /><label for="q1d" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+          </ul>
+          <div class="bg-white rounded-lg shadow-lg p-5 mt-5">
+            <h3 class="text-red-600 mb-2 text-xl">Lời giải</h3>
+            <h3 class="text-xl">Phương pháp giải</h3>
+            <p>[Nội dung phương pháp giải sẽ được điền vào đây]</p>
+          </div>
+        </div>
+        <div id="tab2" class="bg-white rounded-lg shadow-lg p-5 mb-5 h-screen overflow-auto">
+
+          <h2 class="text-2xl text-blue-700 mb-4">Phần 2: Tư duy định lượng</h2>
+          <div class="mb-2">
+            <p class="text-lg">2. Nhà A cách nhà B bởi nhà C và nhà A cài mặt trời bao nhiêu km</p>
+          </div>
+          <ul class="list-none p-0">
+            <li class="mb-1"><input type="radio" name="q2" id="q2a" class="mr-2" /><label for="q2a" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q2" id="q2b" class="mr-2" /><label for="q2b" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q2" id="q2c" class="mr-2" /><label for="q2c" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q2" id="q2d" class="mr-2" /><label for="q2d" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+          </ul>
+          <div class="bg-white rounded-lg shadow-lg p-5 mt-5">
+            <h3 class="text-red-600 mb-2 text-xl">Lời giải</h3>
+            <h3 class="text-xl">Phương pháp giải</h3>
+            <p>[Nội dung phương pháp giải sẽ được điền vào đây]</p>
+          </div>
+        </div>
+        <div id="tab3" class="bg-white rounded-lg shadow-lg p-5 mb-5 h-screen overflow-auto">
+
+          <h2 class="text-2xl text-blue-700 mb-4">Phần 3: Tư duy định lượng</h2>
+          <div class="mb-2">
+            <p class="text-lg">3. Nhà A cách nhà B bởi nhà C và nhà A cài mặt trời bao nhiêu km</p>
+          </div>
+          <ul class="list-none p-0">
+            <li class="mb-1"><input type="radio" name="q3" id="q3a" class="mr-2" /><label for="q3a" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q3" id="q3b" class="mr-2" /><label for="q3b" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q3" id="q3c" class="mr-2" /><label for="q3c" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+            <li class="mb-1"><input type="radio" name="q3" id="q3d" class="mr-2" /><label for="q3d" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
+          </ul>
+          <div class="bg-white rounded-lg shadow-lg p-5 mt-5">
+            <h3 class="text-red-600 mb-2 text-xl">Lời giải</h3>
+            <h3 class="text-xl">Phương pháp giải</h3>
+            <p>[Nội dung phương pháp giải sẽ được điền vào đây]</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1 sticky top-0 h-screen overflow-auto">
+        <div class="bg-white rounded-lg shadow-lg p-5">
+          <h2 class="text-2xl mb-4">Đáp án bài thi</h2>
+          <h3 class="text-xl mb-2">Phần 1: Tư duy định lượng</h3>
+          <div class="flex gap-2 flex-wrap mb-4">
+            <button onclick="scrollToTab('tab1')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">1</button>
+            <button onclick="scrollToTab('tab2')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">2</button>
+            <button onclick="scrollToTab('tab3')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">3</button>
+            <button onclick="scrollToTab('tab4')" class="w-8 h-8 rounded-full text-white font-bold bg-gray-500 hover:bg-gray-600">4</button>
+            <button onclick="scrollToTab('5')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">5</button>
+          </div>
+          <h3 class="text-xl mb-2">Phần 2: Tư duy định tính</h3>
+          <div class="flex gap-2 flex-wrap mb-4">
+            <button onclick="scrollToTab('6')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">6</button>
+            <button onclick="scrollToTab('7')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">7</button>
+            <button onclick="scrollToTab('8')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">8</button>
+            <button onclick="scrollToTab('9')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">9</button>
+            <button onclick="scrollToTab('10')" class="w-8 h-8 rounded-full text-white font-bold bg-gray-500 hover:bg-gray-600">10</button>
+          </div>
+          <h3 class="text-xl mb-2">Phần 3: Tư duy logic</h3>
+          <div class="flex gap-2 flex-wrap mb-4">
+            <button onclick="scrollToTab('11')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">11</button>
+            <button onclick="scrollToTab('12')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">12</button>
+            <button onclick="scrollToTab('13')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">13</button>
+            <button onclick="scrollToTab('14')" class="w-8 h-8 rounded-full text-white font-bold bg-gray-500 hover:bg-gray-600">14</button>
+            <button onclick="scrollToTab('15')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">15</button>
+            <button onclick="scrollToTab('16')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">16</button>
+            <button onclick="scrollToTab('17')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">17</button>
+            <button onclick="scrollToTab('18')" class="w-8 h-8 rounded-full text-white font-bold bg-gray-500 hover:bg-gray-600">18</button>
+            <button onclick="scrollToTab('19')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">19</button>
+            <button onclick="scrollToTab('20')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">20</button>
+          </div>
+          <div class="flex justify-center gap-5 mb-4">
+            <div class="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold bg-green-500">35/100</div>
+            <div class="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold bg-red-500">65/100</div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

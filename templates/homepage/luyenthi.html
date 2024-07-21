@@ -1,90 +1,236 @@
 {% extends 'homepage/base.html' %} 
 {% block content %} 
 {% load static %}
-
+<style>
+    .custom-shadow {
+        box-shadow:  0px 0px 13px 0px rgba(0, 0, 0, 0.3);
+    }
+</style>
 <!-- Sidebar -->
 <div id="sidebar" class="col-auto mt-12">
     <form id="filterForm" method="GET" class="flex flex-wrap items-center justify-center space-x-24">
         <!-- Trường Sách -->
-        <div class="flex items-center mb-2">
-            <label for="{{ form.sach.id_for_label }}" class="mr-2">Sách:</label>
-            {{ form.sach }}
+        <div class="mb-2">
+            <button id="dropdownSachButton" data-dropdown-toggle="dropdownSach" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Sách 
+                <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+            <div id="dropdownSach" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSachButton">
+                    {% for value, text in form.sach.field.choices %}
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-value="{{ value }}">{{ text }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {{ form.sach.as_hidden }}
         </div>
 
         <!-- Trường Khối -->
-        <div class="flex items-center mb-2">
+        <div class="mb-2">
+            <button id="dropdownKhoiButton" data-dropdown-toggle="dropdownKhoi" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Khối
+                <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+            <div id="dropdownKhoi" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownKhoiButton">
+                    {% for value, text in form.khoi.field.choices %}
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-value="{{ value }}">{{ text }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {{ form.khoi.as_hidden }}
+        </div>
+        {% comment %} <div class="flex items-center mb-2">
             <label for="{{ form.khoi.id_for_label }}" class="mr-2">Khối:</label>
             {{ form.khoi }}
-        </div>
+        </div> {% endcomment %}
 
         <!-- Trường Môn thi -->
-        <div class="flex items-center mb-2">
-            <label for="{{ form.mon_thi.id_for_label }}" class="mr-2">Môn thi:</label>
-            {{ form.mon_thi }}
+        <div class="mb-2">
+            <button id="dropdownMonButton" data-dropdown-toggle="dropdownMon" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Môn học
+                <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+            <div id="dropdownMon" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMonButton">
+                    {% for value, text in form.mon_thi.field.choices %}
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-value="{{ value }}">{{ text }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {{ form.mon_thi.as_hidden }}
         </div>
 
         <!-- Trường Chuyên đề -->
-        <div class="flex items-center mb-2">
-            <label for="{{ form.chuyen_de.id_for_label }}" class="mr-2">Chương:</label>
-            {{ form.chuyen_de }}
+        <div class="mb-2">
+            <button id="dropdownChuyenDeButton" data-dropdown-toggle="dropdownChuyenDe" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Chương
+                <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+            <div id="dropdownChuyenDe" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownChuyenDeButton">
+                    {% for value, text in form.chuyen_de.field.choices %}
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-value="{{ value }}">{{ text }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {{ form.chuyen_de.as_hidden }}
         </div>
 
         <!-- Trường Lý thuyết -->
-        <div class="flex items-center mb-2">
-            <label for="{{ form.ly_thuyet.id_for_label }}" class="mr-2">Bài:</label>
-            {{ form.ly_thuyet }}
+        <div class="mb-2">
+            <button id="dropdownBaiButton" data-dropdown-toggle="dropdownBai" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Bài
+                <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+            <div id="dropdownBai" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBaiButton">
+                    {% for value, text in form.ly_thuyet.field.choices %}
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-value="{{ value }}">{{ text }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {{ form.ly_thuyet.as_hidden }}
         </div>
     </form>
+    
 </div>
 <!-- Kết thúc Sidebar -->
-
+<form id="searchForm" class="max-w-md mx-auto">   
+    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Tìm kiếm</label>
+    <div class="relative">
+        <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Tìm kiếm theo mã đề thi" required />
+        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Tìm kiếm</button>
+    </div>
+</form>
 
 {% for dethi in listDeThiActive %}
 
-<div class="grid grid-cols-5 gap-2 items-center mb-12 border border-gray-800 rounded-lg bg-white p-4 mr-24 ml-24">
+<div class="grid grid-cols-4 gap-4 items-center mt-12 mb-12 custom-shadow border rounded-lg bg-white p-4">
     <!-- Logo -->
     <div class="col-span-1">
         <img src="{{ dethi.sach.anh.url }}" alt="Logo Sách" class="w-32 h-auto rounded-full m-2" />
     </div>
     <!-- Tên đề thi, loại đề thi và môn thi -->
-    <div class="col-span-2 rounded-lg border border-gray-800 p-4">
+    <div class="col-span-2 rounded-lg border custom-shadow p-4">
         <div>
             <p class="mb-2 w-full p-2 border border-gray-300 rounded flex justify-between items-center">
-                <span>Môn thi: {{ dethi.mon_thi.ten_mon }}</span>
-                <span class="ml-auto">Thời gian thi: {{ dethi.thoi_gia_thi }}</span>
+                <span> {{ dethi.mon_thi.ten_mon }} {{ dethi.khoi }} </span>
+                <span class="ml-auto">Thời gian thi: {{ dethi.thoi_gian_thi }}</span>
             </p>
         </div>
         <div class="mb-2">
-            <p class="w-full p-2 border border-gray-300 rounded">{{ dethi.ten_de_thi }}</p>
+            <p class="w-full p-2 border border-gray-300 rounded">{{ dethi.chuyen_de }}</p>
+        </div>
+        <div class="mb-2">
+            <p class="w-full p-2 border border-gray-300 rounded">{{ dethi.lyThuyet }}</p>
         </div>
         <div class="">
-            <p class="w-full p-2 border border-gray-300 rounded">Loại đề: {{ dethi.loai_de }}</p>
+            <p class="w-full p-2 border border-gray-300 rounded">Kiểm tra: {{ dethi.loai_de }}</p>
         </div>
     </div>
-    <!-- Chi tiết -->
-    <div class="col-span-1 flex justify-center">
-        <button class="w-full p-4 bg-blue-500 text-white rounded">Chi tiết</button>
-    </div>
-    <!-- Thi -->
-    <div class="col-span-1 flex justify-center">
+    <!-- Thông tin đề thi và mã đề -->
+    <div class="col-span-1 flex flex-col justify-center items-center">
+        <p class="mb-2">Mã đề : {{ dethi.ma_de }}</p>
         <a href="{% url 'luyentap:dgtd_id' idde=dethi.id %}" class="w-full">
-            <button class="w-full p-3 bg-green-500 text-white rounded">Thi</button>
+            <button class="w-full inline-block text-white bg-gray-300 hover:bg-indigo-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    Thi thử
+            </button>
         </a>
     </div>
 </div>
 {% endfor %}
-
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-      // Bắt sự kiện thay đổi trên các trường select của form
-      const form = document.getElementById("filterForm");
-      const selectElements = form.querySelectorAll("select");
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("filterForm");
 
-      selectElements.forEach((select) => {
-          select.addEventListener("change", function () {
-              form.submit(); // Gửi form khi có thay đổi
-          });
-      });
-  });
+        // Function to update the hidden input value and submit the form
+        const updateAndSubmit = (inputName, value) => {
+            let hiddenInput = form.querySelector(`input[name=${inputName}]`);
+            if (!hiddenInput) {
+                // Create a new hidden input if it does not exist
+                hiddenInput = document.createElement("input");
+                hiddenInput.type = "hidden";
+                hiddenInput.name = inputName;
+                form.appendChild(hiddenInput);
+            }
+            hiddenInput.value = value;
+            form.submit();
+        };
+
+        // Add click event listeners to dropdown items
+        const dropdownMenus = form.querySelectorAll("[id^=dropdown]");
+        dropdownMenus.forEach((menu) => {
+            menu.querySelectorAll("a").forEach((item) => {
+                item.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const value = item.getAttribute("data-value");
+                    const dropdownId = menu.id;
+                    
+                    let inputName;
+                    switch (dropdownId) {
+                        case "dropdownSach":
+                            inputName = "sach";
+                            break;
+                        case "dropdownKhoi":
+                            inputName = "khoi";
+                            break;
+                        case "dropdownMon":
+                            inputName = "mon_thi";
+                            break;
+                        case "dropdownChuyenDe":
+                            inputName = "chuyen_de";
+                            break;
+                        case "dropdownBai":
+                            inputName = "ly_thuyet";
+                            break;
+                        default:
+                            console.error(`Unknown dropdown ID: ${dropdownId}`);
+                            return;
+                    }
+                    
+                    updateAndSubmit(inputName, value);
+                });
+            });
+        });
+        const searchForm = document.getElementById("searchForm");
+
+        // Thêm sự kiện submit cho form tìm kiếm
+        searchForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Ngăn chặn hành động mặc định của form
+
+            const searchInput = document.getElementById("default-search");
+            const searchTerm = searchInput.value.trim();
+
+            if (searchTerm) {
+                // Tạo URL tìm kiếm với tham số query
+                const queryString = new URLSearchParams({ search: searchTerm }).toString();
+                const searchUrl = `${window.location.pathname}?${queryString}`;
+
+                // Chuyển hướng đến URL tìm kiếm
+                window.location.href = searchUrl;
+            }
+        });
+    });
 </script>
 {% endblock %}
