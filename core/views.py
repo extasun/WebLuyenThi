@@ -88,4 +88,23 @@ class DGNLView(View):
             'so_lan_thi_dict': so_lan_thi_dict,
         }
         return render(request, 'homepage/dgnl.html', context)
-    
+class DGNLHNView(View):
+    def get(self, request):
+        user = request.user
+        logger = logging.getLogger(__name__)
+        queryset = DGNL.objects.filter(loai_de='DGNLHN')
+        thi_da_thi = LuotThiDGNL.objects.filter(nguoi_lam=user)
+        
+        thi_da_thi_ids = thi_da_thi.values_list('de_thi_id', flat=True)
+        
+        so_lan_thi = thi_da_thi.values('de_thi_id').annotate(count=Count('id')).order_by('de_thi_id')
+        
+        so_lan_thi_dict = {item['de_thi_id']: item['count'] for item in so_lan_thi}
+        
+        context = {
+            'listDeThiDGNL': queryset,
+            'thi_da_thi_ids': thi_da_thi_ids,
+            'so_lan_thi_dict': so_lan_thi_dict,
+        }
+        return render(request, 'homepage/dgnl.html', context)
+     

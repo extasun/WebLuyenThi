@@ -7,11 +7,11 @@ from django.utils import timezone
 from .models import DeThi, NoiDungDe, LuotThi, BaiLam
 from .models import CauHoi, DapAn
 from django.db.models import Q
-from django.utils import timezone
 from User.models import StudentUser
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 import logging
+import re
 class Thi(View):
     def get(self, request):
         return render(request, 'exam.html')
@@ -78,195 +78,165 @@ class DGNL(LoginRequiredMixin, View):
                 'selected_subjects': selected_subjects,
             }
             return render(request, 'dgnl.html', content)
-def SaveBai(luotthix, dapan, noidungde, tinhdung):
-    logger = logging.getLogger(__name__)
-    if not isinstance(dapan, DapAn):
-        logger.error(f"Invalid type for dapan: expected DapAn, got {type(dapan)}")
-        return
-    
-    try:
-        bai_lam = BaiLam(
-            luot_thi=luotthix,
-            dap_an=dapan,
-            noi_dung_de=noidungde,
-            tinh_dung=tinhdung,
-        )
-        bai_lam.save()
-    except Exception as e:
-        logger.error(f"Error saving BaiLam: {e}")
+def SaveBai(luot_thi, dap_an, noi_dung_de, tinh_dung, answer_text=None):
+    bai_lam = BaiLam.objects.create(
+        luu_bai_thi=luot_thi,
+        noi_dung_de=noi_dung_de,
+        dap_an=dap_an,
+        tinh_dung=tinh_dung,
+        answer_text=answer_text
+    )
+    return bai_lam
 
 @method_decorator(csrf_protect, name='dispatch')
 class ChamThi(View):
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
-            logger = logging.getLogger(__name__)
             selected_answers = {}
-            dict_bailam_dapandung = dict()
+            dict_bailam_dapandung = {}
             diem = 0
             so_caudung = 0
-            student_id = request.session['id']
-            student = StudentUser.objects.get(id=student_id)
-            # Lấy giá trị của DeThi
-            ma_de_thi = request.POST.get('DeThiInput', None)
-            de_thi_x = get_object_or_404(DeThi, id=int(ma_de_thi))
-            thoi_gian_con_lai_str = request.POST.get('thoiGianInput', None)
-            thoi_gian_thi = de_thi_x.thoi_gian_thi
-            if thoi_gian_con_lai_str:
-                # Tách chuỗi thoi_gian_con_lai theo dấu hai chấm
-                parts = thoi_gian_con_lai_str.split(':')
-                # Chuyển đổi chuỗi thành các giá trị giờ, phút, giây
-                if len(parts) == 2:
-                    # Nếu chỉ có phút và giây
-                    m, s = map(int, parts)
-                    h = 0
-                elif len(parts) == 3:
-                    # Nếu có giờ, phút và giây
-                    h, m, s = map(int, parts)
-                else:
-                    # Xử lý trường hợp định dạng không hợp lệ
-                    raise ValueError("Invalid time format for thoi_gian_con_lai")
-            thoi_gian_con_lai = timedelta(hours=h, minutes=m, seconds=s)
-            thoi_gian_hoan_thanh = thoi_gian_thi - thoi_gian_con_lai
-            SetNoiDungDe = NoiDungDe.objects.filter(de_thi=de_thi_x).order_by('thu_tu_cau')
-            tong_so_cau = len(SetNoiDungDe)
-            tong_cau_tn = 0
-            tong_cau_ngan = 0
-            tong_cau_ds = 0
-            tn_dung = 0
-            ngan_dung = 0
-            list_diem_DS = list()
-            for key in request.POST:
-                if key.startswith('group'):
-                    question_number = key[5:]  # Lấy số thứ tự câu hỏi từ key
-                    try:
-                        noi_dung_de_temp = SetNoiDungDe.filter(thu_tu_cau=question_number).first()
-                        selected_answers[noi_dung_de_temp] = request.POST.getlist(key)
-                    except NoiDungDe.DoesNotExist:
-                        pass
+            student = StudentUser.objects.get(id=request.session['id'])
+            ma_de_thi = request.POST.get('DeThiInput')
+            de_thi = get_object_or_404(DeThi, id=int(ma_de_thi))
+            
+            thoi_gian_con_lai_str = request.POST.get('thoiGianInput')
+            thoi_gian_con_lai = self.parse_time(thoi_gian_con_lai_str)
+            thoi_gian_hoan_thanh = de_thi.thoi_gian_thi - thoi_gian_con_lai
 
-            try:
-                with transaction.atomic():
-                    luot_thi = LuotThi(
-                        de_thi=de_thi_x,
-                        nguoi_lam=student,
-                        diem_so=0,
-                        thoi_diem_thi=timezone.now(),
-                        thoi_gian_hoan_thanh=timedelta(minutes=0),
-                        so_cau_dung=0
-                    )
-                    luot_thi.save()
+            SetNoiDungDe = NoiDungDe.objects.filter(de_thi=de_thi).order_by('thu_tu_cau')
+            for key, value in request.POST.items():
+                if key.startswith('answer_'):
+                    parts = key.split('_')
+                    question_number = parts[1]
+                    noi_dung_de = SetNoiDungDe.filter(thu_tu_cau=int(question_number)).first()
+                    if noi_dung_de:
+                        if noi_dung_de not in selected_answers:
+                            selected_answers[noi_dung_de] = []
+                        if len(parts) > 2:  # Câu hỏi CB
+                            dap_an_id = parts[2]
+                            selected_answers[noi_dung_de].append((dap_an_id, value))
+                        else:  # Câu hỏi TN hoặc TL
+                            selected_answers[noi_dung_de].append(value)
 
-                    for noi_dung_de in SetNoiDungDe:
-                        value = selected_answers.get(noi_dung_de, [])
-                        if noi_dung_de is not None:
-                            if noi_dung_de.cau_hoi.loai_cau_hoi == 'TN':
-                                tong_cau_tn += 1
-                                if value:
-                                    dapAn = DapAn.objects.filter(id=value[0]).first()
-                                    if dapAn.tinh_dung:
-                                        tn_dung += 1
-                                        so_caudung += 1
-                                        diem += noi_dung_de.diem_so
-                                        SaveBai(luot_thi, dapAn, noi_dung_de, True)
-                                    else:
-                                        SaveBai(luot_thi, dapAn, noi_dung_de, False)
+            with transaction.atomic():
+                luot_thi = LuotThi.objects.create(
+                    de_thi=de_thi,
+                    nguoi_lam=student,
+                    thoi_diem_thi=timezone.now(),
+                    thoi_gian_hoan_thanh=thoi_gian_hoan_thanh
+                )
+
+                for noi_dung_de in SetNoiDungDe:
+                    bai_lam_list = []
+                    values = selected_answers.get(noi_dung_de, [])
+                    
+                    if noi_dung_de.cau_hoi.loai_cau_hoi == 'CB':
+                        cau_dung = 0
+                        all_correct = True
+                        for dap_an_id, value in values:
+                            dapAn = DapAn.objects.filter(id=dap_an_id).first()
+                            if dapAn:
+                                tinh_dung = dapAn.tinh_dung
+                                answer_text = dapAn.noi_dung
+                                bai_lam = SaveBai(luot_thi, dapAn, noi_dung_de, tinh_dung, answer_text=answer_text)
+                                
+                                # Check if the answer is correct
+                                is_correct = (value == 'dung' and tinh_dung) or (value == 'sai' and not tinh_dung)
+                                
+                                bai_lam_list.append({
+                                    'cau_hoi': noi_dung_de.cau_hoi,
+                                    'dap_an': dapAn,
+                                    'trang_thai': 'Đã chọn' if value == 'dung' else 'Không chọn',
+                                    'tinh_dung': is_correct  # Add tinh_dung for each answer
+                                })
+                                
+                                if is_correct:
+                                    cau_dung += 1
                                 else:
-                                    SaveBai(luot_thi, None, noi_dung_de, False)
-                            elif noi_dung_de.cau_hoi.loai_cau_hoi == 'DS':
-                                tong_cau_ds += 1
-                                check_sai = False
-                                diem_cau_nay = 0
+                                    all_correct = False
 
-                                list_da_dung = DapAn.objects.filter(cauHoi=noi_dung_de.cau_hoi, tinh_dung=True)
-                                diem_thanh_phan = round((noi_dung_de.diem_so / len(list_da_dung)), 2) if len(list_da_dung) != 0 else noi_dung_de.diem_so
-
-                                for i in value:
-                                    try:
-                                        dapAnDS = DapAn.objects.get(id=i)
-                                        print(dapAnDS.noi_dung)
-
-                                        if list_da_dung.filter(id=i).exists():
-                                            diem_cau_nay += diem_thanh_phan
-                                            SaveBai(luot_thi, dapAnDS, noi_dung_de, True)
-                                        else:
-                                            SaveBai(luot_thi, dapAnDS, noi_dung_de, False)
-                                            check_sai = True
-                                            diem_cau_nay -= diem_thanh_phan if diem_cau_nay != 0 else 0
-                                    except DapAn.DoesNotExist:
-                                        continue
-
-                                if diem_cau_nay != 0 and not check_sai:
-                                    so_caudung += 1
-                                    diem += diem_cau_nay
-                                    string = f'Câu {noi_dung_de.thu_tu_cau}: {diem_cau_nay}'
-                                else:
-                                    string = f'Câu {noi_dung_de.thu_tu_cau}: 0'
-
-                                list_diem_DS.append(string)
-                            elif noi_dung_de.cau_hoi.loai_cau_hoi == 'CB':
-                                check_sai = False
-                                list_da_dung = DapAn.objects.filter(cauHoi=noi_dung_de.cau_hoi, tinh_dung=True)
-                                list_dap_an_ids = [dap_an.id for dap_an in list_da_dung]
-                                value1 = [int(i) for i in value]
-                                logger.error(set(value1))
-                                logger.error(set(list_dap_an_ids))
-                                if set(value1) == set(list_dap_an_ids):
+                        # Tính điểm cho câu hỏi CB
+                        if cau_dung == 1:
+                            diem += 0.1
+                        elif cau_dung == 2:
+                            diem += 0.25
+                        elif cau_dung == 3:
+                            diem += 0.5
+                        elif cau_dung == 4:
+                            diem += 1
+                            so_caudung += 1
+                        
+                        # Add overall tinh_dung for the entire CB question
+                        for item in bai_lam_list:
+                            if item['cau_hoi'] == noi_dung_de.cau_hoi:
+                                item['tinh_dung_overall'] = all_correct
+                    elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TN':
+                        for value in values:
+                            dapAn = DapAn.objects.filter(id=value).first()
+                            if dapAn:
+                                tinh_dung = dapAn.tinh_dung
+                                answer_text = dapAn.noi_dung
+                                bai_lam = SaveBai(luot_thi, dapAn, noi_dung_de, tinh_dung, answer_text=answer_text)
+                                bai_lam_list.append({
+                                    'cau_hoi': noi_dung_de.cau_hoi,
+                                    'dap_an': dapAn,
+                                    'trang_thai': 'Đã chọn',
+                                    'tinh_dung': tinh_dung
+                                })
+                                if tinh_dung:
                                     so_caudung += 1
                                     diem += noi_dung_de.diem_so
-                                    for i in value1:
-                                        dapAnCB = DapAn.objects.get(id=i)
-                                        SaveBai(luot_thi, dapAnCB, noi_dung_de, True)
-                                    string = f'Câu {noi_dung_de.thu_tu_cau}: {noi_dung_de.diem_so}'
-                                else:
-                                    for i in value1:
-                                        try:
-                                            dapAnCB = DapAn.objects.get(id=i)
-                                            SaveBai(luot_thi, dapAnCB, noi_dung_de, False)
-                                        except DapAn.DoesNotExist:
-                                            continue
-                                    string = f'Câu {noi_dung_de.thu_tu_cau}: 0'
-                            else:
-                                tong_cau_ngan += 1
-                                str_dap_an = str(value[0]) if value else ""
-                                list_da_dung = DapAn.objects.filter(cauHoi=noi_dung_de.cau_hoi, tinh_dung=True)
-                                da_sai = DapAn.objects.filter(tinh_dung=False, cauHoi=noi_dung_de.cau_hoi).first()
-                                for str_da_dung in list_da_dung:
-                                    if str_da_dung.noi_dung == str_dap_an.lower():
-                                        so_caudung += 1
-                                        diem += noi_dung_de.diem_so
-                                        ngan_dung += 1
-                                        SaveBai(luot_thi, str_da_dung, noi_dung_de, True)
-                                        break
-                                    else:
-                                        SaveBai(luot_thi, da_sai, noi_dung_de, False)
-            except Exception as e:
-                logger.error(f"Error processing bai_lam_list: {e}")
+                    
+                    elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL':
+                        answer_text = values[0] if values else ""
+                        dapAn = DapAn.objects.filter(cauHoi=noi_dung_de.cau_hoi, tinh_dung=True).first()
+                        if dapAn and answer_text.lower().strip() == dapAn.noi_dung.lower().strip():
+                            tinh_dung = True
+                            so_caudung += 1
+                            diem += noi_dung_de.diem_so
+                        else:
+                            tinh_dung = False
+                        bai_lam = SaveBai(luot_thi, dapAn, noi_dung_de, tinh_dung, answer_text=answer_text)
+                        bai_lam_list.append({
+                            'cau_hoi': noi_dung_de.cau_hoi,
+                            'dap_an': dapAn,
+                            'trang_thai': 'Đã trả lời',
+                            'tinh_dung': tinh_dung,
+                            'answer_text': answer_text
+                        })
 
-            luot_thi.diem_so = diem
-            luot_thi.so_cau_dung = so_caudung
-            luot_thi.thoi_gian_hoan_thanh = thoi_gian_hoan_thanh
-            luot_thi.save()
+                    dict_bailam_dapandung[noi_dung_de] = {
+                        'bai_lam_list': bai_lam_list,
+                        'dapan_list': list(DapAn.objects.filter(cauHoi=noi_dung_de.cau_hoi, tinh_dung=True)),
+                        'dapan_sai_list': list(DapAn.objects.filter(cauHoi=noi_dung_de.cau_hoi, tinh_dung=False)),
+                    }
 
-            danh_sach_bai_lam = BaiLam.objects.filter(luot_thi=luot_thi).select_related('noi_dung_de').order_by('noi_dung_de__thu_tu_cau')
-            for noidungde in SetNoiDungDe:
-                bai_lam_list = danh_sach_bai_lam.filter(Q(noi_dung_de=noidungde) | Q(noi_dung_de__isnull=True))
-                dapAnDung = DapAn.objects.filter(cauHoi=noidungde.cau_hoi, tinh_dung=True)
-                dict_bailam_dapandung[noidungde] = {
-                    'bai_lam_list': list(bai_lam_list),
-                    'dapan_list': list(dapAnDung)
-                }
+                luot_thi.diem_so = diem
+                luot_thi.so_cau_dung = so_caudung
+                luot_thi.save()
+
+            tong_so_cau = SetNoiDungDe.count()
+            so_cau_sai = tong_so_cau - so_caudung
+            ty_le_dung = round((so_caudung / tong_so_cau) * 100, 2) if tong_so_cau > 0 else 0
 
             context = {
                 'LuotThi': luot_thi,
                 'TongSoCau': tong_so_cau,
                 'dictBLDA': dict_bailam_dapandung,
-                'tong_tn': tong_cau_tn,
-                'tn_dung': tn_dung,
-                'tong_ngan': tong_cau_ngan,
-                'ngan_dung': ngan_dung,
-                'diem_DS': list_diem_DS,
-                'tong_ds': tong_cau_ds,
+                'so_cau_dung': so_caudung,  
+                'so_cau_sai': so_cau_sai,
+                'ty_le_dung': ty_le_dung,
             }
-            print(list_diem_DS)
+
+
             return render(request, 'result_dgnl.html', context)
         return render(request, 'homepage/index.html')
+    def parse_time(self, time_str):
+        parts = time_str.split(':')
+        if len(parts) == 2:
+            return timedelta(minutes=int(parts[0]), seconds=int(parts[1]))
+        elif len(parts) == 3:
+            return timedelta(hours=int(parts[0]), minutes=int(parts[1]), seconds=int(parts[2]))
+        else:
+            raise ValueError("Invalid time format")

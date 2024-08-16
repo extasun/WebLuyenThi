@@ -18,15 +18,13 @@ class LyThuyet(models.Model):
         return self.tieu_de
 class CauHoi(models.Model):
     TRAC_NGHIEM = 'TN'
-    DUNG_SAI = 'DS'
+    DUNG_SAI = 'CB'
     TU_LUAN = 'TL'
-    DIEN_TU = 'DT'
 
     LOAI_CAU_HOI_CHOICES = [
         (TRAC_NGHIEM, 'Trắc nghiệm'),
         (DUNG_SAI, 'Đúng sai'),
         (TU_LUAN, 'Tự luận'),
-        (DIEN_TU, 'Điền từ'),
     ]
     # Choices for muc_do
     NHAN_BIET = '1'

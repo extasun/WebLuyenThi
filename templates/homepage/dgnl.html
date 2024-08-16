@@ -1,46 +1,39 @@
-{% extends 'homepage/base.html' %} 
-{% block content %} 
+{% extends 'homepage/base.html' %}
+{% block content %}
 {% load static %}
+
 <style>
     .custom-shadow {
-        box-shadow:  0px 0px 13px 0px rgba(0, 0, 0, 0.3);
+        box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.2);
     }
 </style>
-<div class="grid grid-cols-4 gap-4 bg-white items-start mb-12 p-4 ml-12 mr-12">
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
     {% for dethi in listDeThiDGNL %}
-    <div class="max-w-sm p-6 mt-16  ml-4 bg-white border border-gray-200 rounded-lg custom-shadow dark:bg-gray-800 dark:border-gray-700">
-        <!-- Tên đề thi -->
-        <div class="mb-4">
-            <p class="w-full p-2  text-center font-bold">{{ dethi.ten_de_thi }}</p>
+    <div class="bg-white rounded-3xl custom-shadow p-6 flex flex-col">
+        <div class="flex justify-between items-start mb-4">
+            <h2 class="text-lg font-bold">{{ dethi.ten_de_thi }}</h2>
+            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+            </svg>
         </div>
-        <!-- Mã đề -->
-        <div class="flex mb-4 justify-center">
-            <p class="w-full p-2">Mã đề: {{ dethi.ma_de }}</p>
+        <div class="border-b border-gray-200 mb-4"></div>
+        <p class="text-sm  mb-2">Mã đề: {{ dethi.ma_de }}</p>
+        <div class="flex justify-between text-sm  mb-4">
+            <span>Số câu hỏi: {{ dethi.noidungde_set.count }}</span>
+            <span>Thời gian thi: {{ dethi.thoi_gian_thi }}</span>
         </div>
-        <!-- Số câu hỏi và thời gian thi -->
-        <div class="mb-4">
-            <p class="w-full p-2 flex justify-between items-center">
-                <span>Số câu hỏi: {{ dethi.noidungde_set.count }}</span>
-                <span>Thời gian thi: {{ dethi.thoi_gian_thi }}</span>
-            </p>
-        </div>
-         <!-- Nút Chi tiết và Thi -->
-         <div class="flex justify-center mt-4">
-            <a href="{% url 'DanhGiaNangLuc:select_subjects' idde=dethi.id %}" class="w-1/2">
-                <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="w-32 inline-block text-white bg-gray-300 hover:bg-indigo-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                    {% if dethi.id in thi_da_thi_ids %}
-                        Luyện lại
-                    {% else %}
-                        Thi thử
-                    {% endif %}
-                    </button>
-                
-            </a>
-        </div>
+        <a href="{% url 'DanhGiaNangLuc:select_subjects' idde=dethi.id %}" class="mt-auto">
+            <button class="w-full py-2 px-4 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition-colors duration-200">
+                {% if dethi.id in thi_da_thi_ids %}
+                    Thi lại
+                {% else %}
+                    Thi thử
+                {% endif %}
+            </button>
+        </a>
     </div>
     {% endfor %}
 </div>
-
-
 
 {% endblock %}

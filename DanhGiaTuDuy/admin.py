@@ -1,5 +1,7 @@
 from typing import Any
+from django import forms
 from django.contrib import admin
+from django.db import models
 from .models import CauHoi, DapAn, DeThi, NoiDungDe, BaiLam, LuotThi, DocHieuNoiDung, KhoaHocNoiDung
 
 class DapAnInline(admin.TabularInline):
@@ -131,7 +133,7 @@ class KhoaHocNoiDungAdmin(admin.ModelAdmin):
     list_display = ['id', 'tieu_de']
     list_display_links = ['tieu_de']
     search_fields = ['tieu_de']
-# Register your models here
+
 admin.site.register(CauHoi, CauHoiAdmin)
 admin.site.register(DapAn, DapAnAdmin)
 admin.site.register(DeThi, DeThiAdmin)

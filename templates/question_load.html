@@ -1,114 +1,92 @@
 {% load static %}
 {% if noi_dung_de.cau_hoi.loai_cau_hoi == 'TN' %}
-<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
-    <div class="border-spacing-1 flex flex-row items-center">
-        <span class="font-medium ml-2 text-xl">
-            <span class="bg-gray-200 rounded-full text-center inline-block w-10 h-10 leading-10 font-bold">
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1 mb-4">
+    <div class="flex flex-col items-start">
+        <span class="font-bold ml-2 text-2xl">{{ noi_dung_de.cau_hoi.tieu_de }}</span>
+        <div class="flex flex-grow">
+            <span class="bg-gray-200 rounded-full text-center inline-flex items-center justify-center w-10 h-10 font-bold mr-4 flex-shrink-0">
                 {{ noi_dung_de.thu_tu_cau }}
             </span>
-            <span class="font-normal ml-2">
-                {{ noi_dung_de.cau_hoi.noi_dung }}
-            </span>
-        </span>
-    </div>
-    <div class="flex flex-col">
-        {% for dap_an in dapans %}
-        <label class="inline-flex items-center ml-16">
-            <input type="radio" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" class="hidden peer" />
-            <span class="w-6 h-6 flex items-center justify-center rounded-full border peer-checked:bg-blue-700 peer-checked:border-blue-700 bg-gray-300 border-gray-300"> 
-            </span>
-            <span class="ml-2 text-2xl">{{ dap_an.noi_dung }}</span>
-            
-        </label>
-        {% endfor %}
-    </div>
-    {% if noi_dung_de.cau_hoi.anh %}
-    <div class="ml-4 flex-shrink-0">
-        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="max-w-full max-2xl" />
-    </div>
-    {% endif %}
-</div>
-{% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'DS' %}
-<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
-    <div class="border-spacing-1 flex flex-row items-center">
-        <span class="font-medium ml-2 text-xl">
-            <span class="bg-gray-200 rounded-full text-center inline-block w-10 h-10 leading-10 font-bold">
-                {{ noi_dung_de.thu_tu_cau }}
-            </span>
-            <span class="font-normal ml-2">
-                {{ noi_dung_de.cau_hoi.noi_dung }}
-            </span>
-        </span>
-    </div>
-    <div class="flex flex-col">
-        {% for dap_an in dapans %}
-        <label class="flex items-center ml-16">
-            <span class="text-2xl">{{ dap_an.noi_dung }}</span>
-            <div class="ml-auto flex items-center space-x-4">
-                <input type="checkbox" class="form-checkbox h-8 w-8 text-blue-600" id="checkbox-dung-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" onchange="updateLabel(this, true)" />
-                <label for="checkbox-dung-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" class="text-xl">Đúng</label>
-                <input type="checkbox" class="form-checkbox h-8 w-8 text-red-600" id="checkbox-sai-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" onchange="updateLabel(this, false)" />
-                <label for="checkbox-sai-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" class="text-xl">Sai</label>
+            <p class="text-xl mb-4">{{ noi_dung_de.cau_hoi.noi_dung }}</p>
+        </div>
+        <div class="flex-grow">
+            <div class="flex flex-col space-y-2 ml-12">
+                {% for dap_an in dapans %}
+                <label class="inline-flex items-center">
+                    <input type="radio" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="answer_{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" class="hidden peer" />
+                    <span class="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full border peer-checked:bg-blue-700 peer-checked:border-blue-700 bg-gray-300 border-gray-300"></span>
+                    <span class="ml-2 text-lg">{{ dap_an.noi_dung }}</span>
+                </label>
+                {% endfor %}
             </div>
-            <input type="checkbox" class="hidden" id="checkbox-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
-        </label>
-        {% endfor %}
+        </div>
     </div>
     {% if noi_dung_de.cau_hoi.anh %}
-    <div class="ml-4 flex-shrink-0">
-        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="w-52 h-56" />
+    <div class="mt-4">
+        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="max-w-full h-auto" />
     </div>
     {% endif %}
 </div>
 {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'CB' %}
-<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
-    <div class="border-spacing-1 flex flex-row items-center">
-        <span class="font-medium ml-2 text-xl">
-            <span class="bg-gray-200 rounded-full text-center inline-block w-10 h-10 leading-10 font-bold">
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1 mb-4">
+    <div class="flex flex-col items-start">
+        <div class="flex items-center mb-2">
+            <span class="bg-gray-200 rounded-full text-center inline-flex items-center justify-center w-8 h-8 font-bold mr-4 flex-shrink-0">
                 {{ noi_dung_de.thu_tu_cau }}
             </span>
-            <span class="font-normal ml-2">
-                {{ noi_dung_de.cau_hoi.noi_dung }}
-            </span>
-        </span>
+            <p class="text-lg">{{ noi_dung_de.cau_hoi.noi_dung }}</p>
+        </div>
+        <div class="flex-grow ml-12">
+            <div class="flex justify-end space-x-8 mb-2">
+                <span class="font-bold">Đúng</span>
+                <span class="font-bold">Sai</span>
+            </div>
+            {% for dap_an in dapans %}
+            <div class="flex items-center justify-between mt-2">
+                <span class="text-lg flex-grow">{{ dap_an.noi_dung }}</span>
+                <div class="flex items-center space-x-8 ml-16">
+                    <label class="inline-flex items-center">
+                        <input type="radio" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}-dung" name="answer_{{ noi_dung_de.thu_tu_cau }}_{{ dap_an.id }}" value="dung" class="hidden peer" />
+                        <span class="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full border peer-checked:bg-blue-700 peer-checked:border-blue-700 bg-gray-300 border-gray-300"></span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" id="radio{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}-sai" name="answer_{{ noi_dung_de.thu_tu_cau }}_{{ dap_an.id }}" value="sai" class="hidden peer" />
+                        <span class="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full border peer-checked:bg-blue-700 peer-checked:border-blue-700 bg-gray-300 border-gray-300"></span>
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    <div class="flex flex-col ml-16">
-        {% for dap_an in dapans %}
-        <label class="flex items-center">
-            <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" id="checkbox-{{ noi_dung_de.thu_tu_cau }}-{{ dap_an.id }}" name="group{{ noi_dung_de.thu_tu_cau }}" value="{{ dap_an.id }}" />
-            <span class="ml-2 text-2xl">{{ dap_an.noi_dung }}</span>
-        </label>
-        {% endfor %}
-    </div>
-    {% if noi_dung_de.cau_hoi.anh %}
-    <div class="ml-4 flex-shrink-0">
-        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="w-52 h-56" />
-    </div>
-    {% endif %}
 </div>
 {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL' %}
-<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1">
-    <div class="flex items-center space-x-4">
-        <!-- Phần câu hỏi -->
-        <div class="flex items-center space-x-2">
-            <span class="bg-gray-200 rounded-full text-center inline-block w-10 h-10 leading-10 font-bold flex items-center justify-center">
-                {{ noi_dung_de.thu_tu_cau }}
-            </span>
-            <span class="font-normal text-xl">
-                {{ noi_dung_de.cau_hoi.noi_dung }}
-            </span>
-        </div>
+<div id="question-{{ noi_dung_de.thu_tu_cau }}" data-tab="{{ noi_dung_de.thu_tu_cau }}" class="question-container max-w-full flex-1 mb-4">
+    <div class="flex flex-col items-start">
+        <!-- Tiêu đề -->
+        <h2 class="font-bold text-xl">{{ noi_dung_de.cau_hoi.tieu_de }}</h2>
     
-        <!-- Ô đáp án -->
-        <textarea id="inputTextArea{{ noi_dung_de.thu_tu_cau }}" name="group{{ noi_dung_de.thu_tu_cau }}" class="w-32 h-10 border-gray-300 shadow-xl outline-none rounded-xl transition-all resize-none overflow-hidden"></textarea>
+        <div class="relative pl-12 py-2">
+            <!-- Số thứ tự câu hỏi -->
+            <div class="absolute top-1/2 left-0 -translate-y-1/2 bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center">
+                <span class="font-bold text-gray-700">{{ noi_dung_de.thu_tu_cau }}</span>
+            </div>
+            
+            <!-- Nội dung câu hỏi và ô nhập liệu -->
+            <div class="flex items-center">
+                <div class="text-lg font-medium mr-2">{{ noi_dung_de.cau_hoi.noi_dung }}</div>
+                <input 
+                    type="text"
+                    id="inputTextArea{{ noi_dung_de.thu_tu_cau }}" 
+                    name="answer_{{ noi_dung_de.thu_tu_cau }}" 
+                    class="w-32 h-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md transition-all p-2"
+                >
+            </div>
+        </div>
     </div>
     {% if noi_dung_de.cau_hoi.anh %}
-    <div class="ml-4 flex-shrink-0">
-        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="w-52 h-56" />
+    <div class="mt-4">
+        <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Image" class="max-w-full h-auto" />
     </div>
     {% endif %}
 </div>
-{% comment %} <div class="flex items-end">
-    <textarea id="inputTextArea{{noi_dung_de.thu_tu_cau}}" rows="2" name="group{{noi_dung_de.thu_tu_cau}}" class="py-4 w-64 px-3 border border-b-rose-500 outline-none rounded-xl m-3 focus:border-purple-800 transition-all resize-none"></textarea>
-</div> {% endcomment %}
 {% endif %}

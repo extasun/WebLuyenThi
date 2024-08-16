@@ -15,14 +15,12 @@ class CauHoi(models.Model):
         ('sinh', 'Sinh Học'),
         ('su', 'Lịch Sử'),
         ('dia', 'Địa Lý'),
-        ('gdcd', 'Giáo Dục Công Dân'),
+        ('gdcd', 'Giáo dục kinh tế và pháp luật'),
     )
     LOAI_CAU_HOI_CHOICES = [
         ('TN', 'Trắc nghiệm'),
-        ('DS', 'Đúng sai'),
+        ('CB', 'Đúng sai'),
         ('TL', 'Tự luận'),
-        ('KT', 'Kéo thả'),
-        ('CB', 'Chọn nhiều đáp án đúng')
     ]
     PHAN_2_CHOICES = [
         ('TH', 'Toán học'),
@@ -66,7 +64,8 @@ class DapAn(models.Model):
         return self.noi_dung
 class DeThi(models.Model):
     LOAI_DE_CHOICES = [
-         ('DGNL', 'Đánh giá năng lực'),
+         ('DGNL', 'Đánh giá năng lực HCM'),
+         ('DGNLHN', 'Đánh giá năng lực Hà Nội'),
     ]
     ten_de_thi = models.CharField(max_length=255, null=False, blank=False)
     loai_de = models.CharField(max_length=50, choices=LOAI_DE_CHOICES, default='DGNL')
@@ -79,75 +78,22 @@ class NoiDungDe(models.Model):
     cau_hoi = models.ForeignKey(CauHoi, on_delete=models.CASCADE)
     diem_so = models.FloatField(validators=[MinValueValidator(0.01), MaxValueValidator(10.00)], default=1)
     thu_tu_cau = models.IntegerField(validators=[MinValueValidator(1)])
-    def save(self, *args, **kwargs):
-        if not self.pk:  # chỉ áp dụng khi đối tượng chưa tồn tại trong database
-            last_item = NoiDungDe.objects.filter(de_thi=self.de_thi).order_by('-thu_tu_cau').first()
-            if last_item:
-                self.thu_tu_cau = last_item.thu_tu_cau + 1
-            else:
-                self.thu_tu_cau = 1
-        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.cau_hoi.noi_dung
 class LuotThi(models.Model):
     de_thi = models.ForeignKey(DeThi, on_delete=models.CASCADE)
-    nguoi_lam = models.ForeignKey(StudentUser, on_delete=models.CASCADE, related_name='danhgianangluc_luotthi_set')
-    diem_so = models.FloatField(
-        default=0,
-        validators=[MinValueValidator(0), MaxValueValidator(10)],
-        help_text="Điểm số từ 0 đến 10"
-    )
+    nguoi_lam = models.ForeignKey(StudentUser, on_delete=models.CASCADE, related_name='danhgiannangluc_luotthi_set') 
+    diem_so = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     thoi_diem_thi = models.DateTimeField(default=timezone.now)
     thoi_gian_hoan_thanh = models.DurationField(default=timezone.timedelta(minutes=0))
-    so_cau_dung = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        verbose_name = "Lượt thi"
-        verbose_name_plural = "Các lượt thi"
-        ordering = ['-thoi_diem_thi']
-
-    def __str__(self):
-        return f"Lượt thi của {self.nguoi_lam.username} - Đề thi: {self.de_thi.ten_de_thi}"
-
-    def save(self, *args, **kwargs):
-        if self.diem_so > 10:
-            self.diem_so = 10
-        elif self.diem_so < 0:
-            self.diem_so = 0
-        super().save(*args, **kwargs)
-
-    @property
-    def ket_qua(self):
-        return "Đạt" if self.diem_so >= 50 else "Không đạt"
+    so_cau_dung = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
 class BaiLam(models.Model):
-    luot_thi = models.ForeignKey(LuotThi, on_delete=models.CASCADE, related_name='bai_lams', null=True)
-    dap_an = models.ForeignKey(DapAn, on_delete=models.CASCADE)
+    luu_bai_thi = models.ForeignKey('LuotThi', on_delete=models.CASCADE, null=True)
+    dap_an = models.ForeignKey(DapAn, on_delete=models.CASCADE)  # Link to DapAn model
     noi_dung_de = models.ForeignKey(NoiDungDe, on_delete=models.CASCADE, null=True)
     tinh_dung = models.BooleanField(default=False)
-
-    class Meta:
-        verbose_name = "Bài làm"
-        verbose_name_plural = "Các bài làm"
-        unique_together = ['luot_thi', 'noi_dung_de']
-
+    answer_text = models.TextField(null=True, blank=True)
     def __str__(self):
-        return f"Bài làm: {self.noi_dung_de.cau_hoi.tieu_de} - Lượt thi: {self.luot_thi}"
-
-    def clean(self):
-        if self.dap_an.cauHoi != self.noi_dung_de.cau_hoi:
-            raise ValidationError("Đáp án phải thuộc về câu hỏi trong nội dung đề.")
-
-    def save(self, *args, **kwargs):
-        self.clean()
-        self.tinh_dung = self.dap_an.tinh_dung
-        super().save(*args, **kwargs)
-
-    @property
-    def cau_hoi(self):
-        return self.noi_dung_de.cau_hoi
-
-    @property
-    def diem(self):
-        return self.noi_dung_de.diem_so if self.tinh_dung else 0
-
+        return self.noi_dung_de.cau_hoi.noi_dung

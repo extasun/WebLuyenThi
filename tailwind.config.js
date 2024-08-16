@@ -8,7 +8,12 @@ module.exports = {
   
   theme: {
     extend: {
+      maxHeight: {
+        '128': '45rem',
+        '129': '48rem',
+      },
       height: {
+        '100': '23rem',
         '128': '28rem', 
         '200': '50rem',  
         '400': '100rem',

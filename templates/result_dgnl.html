@@ -1,108 +1,259 @@
 {% extends 'homepage/base.html' %}
 {% block content %}
-{% load static %} 
-    <script>
-      function scrollToTab(tabId) {
-          const tabContent = document.getElementById(tabId);
-          if (tabContent) {
-              tabContent.scrollIntoView({ behavior: 'smooth' });
-          }
-      }
-    </script>
-    <div class="flex max-w-6xl mx-auto p-5 bg-gray-100">
-      <div class="flex-2 mr-5">
-        <div id="tab1" class="bg-white rounded-lg shadow-lg p-5 mb-5 h-screen overflow-auto">
+{% load static %}
+<style>
+    .custom-shadow {
+        box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.2);
+    }
+    .question-container {
+        display: none;
+    }
+    .question-container.active {
+        display: block;
+    }
+    .nav-button {
+        background-color: #2563eb;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .nav-button:hover {
+        background-color: #2d3748;
+    }
+    .nav-button:disabled {
+        background-color: #a0aec0;
+        cursor: not-allowed;
+    }
+    .circular-chart {
+        display: block;
+        margin: 10px auto;
+        max-width: 80%;
+        max-height: 250px;
+    }
+    .circle-bg {
+        fill: none;
+        stroke: #eee;
+        stroke-width: 3.8;
+    }
+    .circle {
+        fill: none;
+        stroke-width: 2.8;
+        stroke-linecap: round;
+        animation: progress 1s ease-out forwards;
+    }
+    @keyframes progress {
+        0% {
+            stroke-dasharray: 0 100;
+        }
+    }
+    .circular-chart .circle {
+        stroke: #4CC790;
+    }
+    .percentage {
+        fill: #666;
+        font-family: sans-serif;
+        font-size: 0.5em;
+        text-anchor: middle;
+    }
 
-          <h2 class="text-2xl text-blue-700 mb-4">Phần 1: Tư duy định lượng</h2>
-          <div class="mb-2">
-            <p class="text-lg">1. Nhà A cách nhà B bởi nhà C và nhà A cài mặt trời bao nhiêu km</p>
-          </div>
-          <ul class="list-none p-0">
-            <li class="mb-1"><input type="radio" name="q1" id="q1a" class="mr-2" /><label for="q1a" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q1" id="q1b" class="mr-2" /><label for="q1b" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q1" id="q1c" class="mr-2" /><label for="q1c" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q1" id="q1d" class="mr-2" /><label for="q1d" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-          </ul>
-          <div class="bg-white rounded-lg shadow-lg p-5 mt-5">
-            <h3 class="text-red-600 mb-2 text-xl">Lời giải</h3>
-            <h3 class="text-xl">Phương pháp giải</h3>
-            <p>[Nội dung phương pháp giải sẽ được điền vào đây]</p>
-          </div>
-        </div>
-        <div id="tab2" class="bg-white rounded-lg shadow-lg p-5 mb-5 h-screen overflow-auto">
+</style>
 
-          <h2 class="text-2xl text-blue-700 mb-4">Phần 2: Tư duy định lượng</h2>
-          <div class="mb-2">
-            <p class="text-lg">2. Nhà A cách nhà B bởi nhà C và nhà A cài mặt trời bao nhiêu km</p>
-          </div>
-          <ul class="list-none p-0">
-            <li class="mb-1"><input type="radio" name="q2" id="q2a" class="mr-2" /><label for="q2a" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q2" id="q2b" class="mr-2" /><label for="q2b" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q2" id="q2c" class="mr-2" /><label for="q2c" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q2" id="q2d" class="mr-2" /><label for="q2d" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-          </ul>
-          <div class="bg-white rounded-lg shadow-lg p-5 mt-5">
-            <h3 class="text-red-600 mb-2 text-xl">Lời giải</h3>
-            <h3 class="text-xl">Phương pháp giải</h3>
-            <p>[Nội dung phương pháp giải sẽ được điền vào đây]</p>
-          </div>
+<div class="container mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Kết quả bài thi: {{ LuotThi.de_thi.ten_de_thi }}</h1>
+    <div class="grid grid-cols-3 gap-4 mb-8 ">
+        <div class="col-span-2">
+            <div class="bg-white custom-shadow rounded-lg p-4 h-auto">
+                {% for noi_dung_de, value in dictBLDA.items %}
+                <div id="question-{{ noi_dung_de.thu_tu_cau }}" class="question-container mb-6 pb-4 border-b">
+                    <h2 class="text-lg font-semibold mb-2">Câu {{ noi_dung_de.thu_tu_cau }}. {{ noi_dung_de.cau_hoi.noi_dung }}</h2>
+                    {% if noi_dung_de.cau_hoi.anh %}
+                    <img src="{{ noi_dung_de.cau_hoi.anh.url }}" alt="Hình ảnh câu hỏi" class="mb-2 max-w-full h-auto">
+                    {% endif %}
+                    <div class="mb-2">
+                        <strong>Đáp án của bạn:</strong>
+                        {% if noi_dung_de.cau_hoi.loai_cau_hoi == 'CB' %}
+                            <div class="flex justify-end space-x-8 mb-2">
+                                <span class="font-bold">Đúng</span>
+                                <span class="font-bold">Sai</span>
+                            </div>
+                            {% for bailam in value.bai_lam_list %}
+                            <div style="display:none;">{{ bailam }}</div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-lg flex-grow">{{ bailam.dap_an.noi_dung }}</span>
+                                <div class="flex items-center space-x-8 ml-16">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="answer_{{ noi_dung_de.thu_tu_cau }}_{{ bailam.dap_an.id }}" 
+                                               value="dung" 
+                                               {% if bailam.trang_thai == 'Đã chọn' %}checked{% endif %} 
+                                               disabled 
+                                               class="hidden peer" />
+                                        <span class="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full border 
+                                                     {% if bailam.trang_thai == 'Đã chọn'%}bg-blue-700 border-blue-700
+                                                     {% else %}bg-gray-300 border-gray-300{% endif %}">
+                                        </span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="answer_{{ noi_dung_de.thu_tu_cau }}_{{ bailam.dap_an.id }}" 
+                                               value="sai" 
+                                               {% if bailam.trang_thai == 'Không chọn' %}checked{% endif %} 
+                                               disabled 
+                                               class="hidden peer" />
+                                        <span class="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full border 
+                                                     {% if bailam.trang_thai == 'Không chọn'%}bg-blue-700 border-blue-700
+                                                     {% else %}bg-gray-300 border-gray-300{% endif %}">
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TN' %}
+                            {%if not value.bai_lam_list %}
+                            <span class="font-mono ">  </span>
+                            <br>
+                            {% elif value.bai_lam_list.0.tinh_dung %}
+                            <span class="font-mono text-green-500"> {{value.bai_lam_list.0.dap_an.noi_dung}} </span>
+                            {% else %}
+                            <span class="font-mono text-red-500"> {{value.bai_lam_list.0.dap_an.noi_dung}} </span>
+                            {% endif %}
+                        {% elif noi_dung_de.cau_hoi.loai_cau_hoi == 'TL' %}
+                            {% for bailam in value.bai_lam_list %}
+                                <span class="{% if bailam.tinh_dung %}text-green-600{% else %}text-red-600{% endif %}">
+                                    {{ bailam.answer_text|default:" " }}
+                                </span>
+                            {% empty %}
+                                <span class="text-gray-500">Không có đáp án</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-2">
+                        {% if noi_dung_de.cau_hoi.loai_cau_hoi == 'CB' %}
+                            <strong>Mệnh đề đúng:</strong>
+                            {% for dap_an in value.dapan_list %}
+                                <span class="text-green-600">{{ dap_an.noi_dung }}{% if not forloop.last %}, {% endif %}</span>
+                            {% endfor %}
+                            <br>
+                            <strong>Mệnh đề sai:</strong>
+                            {% for dap_an in value.dapan_sai_list %}
+                                <span class="text-red-600">{{ dap_an.noi_dung }}{% if not forloop.last %}, {% endif %}</span>
+                            {% endfor %}
+                        {%else%}
+                            <strong>Đáp án đúng:</strong>
+                            {% for dap_an in value.dapan_list %}
+                                <span class="text-green-600">{{ dap_an.noi_dung }}{% if not forloop.last %}, {% endif %}</span>
+                            {% endfor %}
+                        {%endif%}
+                    </div>
+                    <div class="mt-2">
+                        <strong>Lời giải:</strong>
+                        <p>{{ noi_dung_de.cau_hoi.cach_giai|default:"Chưa có lời giải" }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mt-4 flex justify-between">
+                <button id="prevBtn" class="nav-button" onclick="changeQuestion(-1)">Câu trước</button>
+                <button id="nextBtn" class="nav-button" onclick="changeQuestion(1)">Câu tiếp</button>
+            </div>
         </div>
-        <div id="tab3" class="bg-white rounded-lg shadow-lg p-5 mb-5 h-screen overflow-auto">
-
-          <h2 class="text-2xl text-blue-700 mb-4">Phần 3: Tư duy định lượng</h2>
-          <div class="mb-2">
-            <p class="text-lg">3. Nhà A cách nhà B bởi nhà C và nhà A cài mặt trời bao nhiêu km</p>
-          </div>
-          <ul class="list-none p-0">
-            <li class="mb-1"><input type="radio" name="q3" id="q3a" class="mr-2" /><label for="q3a" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q3" id="q3b" class="mr-2" /><label for="q3b" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q3" id="q3c" class="mr-2" /><label for="q3c" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-            <li class="mb-1"><input type="radio" name="q3" id="q3d" class="mr-2" /><label for="q3d" class="text-lg">Anh Tiến Nhất đẹp trai</label></li>
-          </ul>
-          <div class="bg-white rounded-lg shadow-lg p-5 mt-5">
-            <h3 class="text-red-600 mb-2 text-xl">Lời giải</h3>
-            <h3 class="text-xl">Phương pháp giải</h3>
-            <p>[Nội dung phương pháp giải sẽ được điền vào đây]</p>
-          </div>
+        
+        <div class="col-span-1">
+            <div class="bg-white custom-shadow rounded-lg p-4 sticky top-4">
+                <h2 class="text-lg font-semibold mb-4">Kết quả bài thi</h2>
+                
+                <div class="mt-4">
+                    <strong>Điểm số: {{ LuotThi.diem_so }}</strong>
+                </div>
+                
+                <div class="mt-4">
+                    <h3 class="font-semibold mb-2">Các câu hỏi:</h3>
+                    <div class="grid grid-cols-5 gap-2">
+                        {% for noi_dung_de, value in dictBLDA.items %}
+                            {% if not value.bai_lam_list %}
+                                <button onclick="scrollToQuestion({{ noi_dung_de.thu_tu_cau }})" class="w-10 h-10 bg-gray-300 text-black border rounded-full flex items-center justify-center">
+                                    {{ noi_dung_de.thu_tu_cau }}
+                                </button>
+                            {% else %}
+                                {% if noi_dung_de.cau_hoi.loai_cau_hoi == 'CB' %}
+                                    {% if value.bai_lam_list.0.tinh_dung_overall %}
+                                        <button onclick="scrollToQuestion({{ noi_dung_de.thu_tu_cau }})" class="w-10 h-10 text-white border rounded-full flex items-center justify-center" style="background-color: #00b050;">
+                                            {{ noi_dung_de.thu_tu_cau }}
+                                        </button>
+                                    {% else %}
+                                        <button onclick="scrollToQuestion({{ noi_dung_de.thu_tu_cau }})" class="w-10 h-10 text-white border rounded-full flex items-center justify-center" style="background-color: #ff0000;">
+                                            {{ noi_dung_de.thu_tu_cau }}
+                                        </button>
+                                    {% endif %}
+                                {% else %}
+                                    {% if value.bai_lam_list.0.tinh_dung %}
+                                        <button onclick="scrollToQuestion({{ noi_dung_de.thu_tu_cau }})" class="w-10 h-10 text-white border rounded-full flex items-center justify-center" style="background-color: #00b050;">
+                                            {{ noi_dung_de.thu_tu_cau }}
+                                        </button>
+                                    {% else %}
+                                        <button onclick="scrollToQuestion({{ noi_dung_de.thu_tu_cau }})" class="w-10 h-10 text-white border rounded-full flex items-center justify-center" style="background-color: #ff0000;">
+                                            {{ noi_dung_de.thu_tu_cau }}
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <div class="w-1/2 p-2">
+                        <div class="rounded-full w-24 h-24 flex items-center justify-center mx-auto custom-shadow" style="background-color: #00b050;">
+                            <div class="text-white text-center">
+                                <div class="text-xl font-bold">{{ so_cau_dung }}/{{ TongSoCau }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-1/2 p-2">
+                        <div class="rounded-full w-24 h-24 flex items-center justify-center mx-auto custom-shadow" style="background-color: #ff0000;">
+                            <div class="text-white text-center">
+                                <div class="text-xl font-bold">{{ so_cau_sai }}/{{ TongSoCau }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="flex-1 sticky top-0 h-screen overflow-auto">
-        <div class="bg-white rounded-lg shadow-lg p-5">
-          <h2 class="text-2xl mb-4">Đáp án bài thi</h2>
-          <h3 class="text-xl mb-2">Phần 1: Tư duy định lượng</h3>
-          <div class="flex gap-2 flex-wrap mb-4">
-            <button onclick="scrollToTab('tab1')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">1</button>
-            <button onclick="scrollToTab('tab2')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">2</button>
-            <button onclick="scrollToTab('tab3')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">3</button>
-            <button onclick="scrollToTab('tab4')" class="w-8 h-8 rounded-full text-white font-bold bg-gray-500 hover:bg-gray-600">4</button>
-            <button onclick="scrollToTab('5')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">5</button>
-          </div>
-          <h3 class="text-xl mb-2">Phần 2: Tư duy định tính</h3>
-          <div class="flex gap-2 flex-wrap mb-4">
-            <button onclick="scrollToTab('6')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">6</button>
-            <button onclick="scrollToTab('7')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">7</button>
-            <button onclick="scrollToTab('8')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">8</button>
-            <button onclick="scrollToTab('9')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">9</button>
-            <button onclick="scrollToTab('10')" class="w-8 h-8 rounded-full text-white font-bold bg-gray-500 hover:bg-gray-600">10</button>
-          </div>
-          <h3 class="text-xl mb-2">Phần 3: Tư duy logic</h3>
-          <div class="flex gap-2 flex-wrap mb-4">
-            <button onclick="scrollToTab('11')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">11</button>
-            <button onclick="scrollToTab('12')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">12</button>
-            <button onclick="scrollToTab('13')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">13</button>
-            <button onclick="scrollToTab('14')" class="w-8 h-8 rounded-full text-white font-bold bg-gray-500 hover:bg-gray-600">14</button>
-            <button onclick="scrollToTab('15')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">15</button>
-            <button onclick="scrollToTab('16')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">16</button>
-            <button onclick="scrollToTab('17')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">17</button>
-            <button onclick="scrollToTab('18')" class="w-8 h-8 rounded-full text-white font-bold bg-gray-500 hover:bg-gray-600">18</button>
-            <button onclick="scrollToTab('19')" class="w-8 h-8 rounded-full text-white font-bold bg-green-500 hover:bg-green-600">19</button>
-            <button onclick="scrollToTab('20')" class="w-8 h-8 rounded-full text-white font-bold bg-red-500 hover:bg-red-600">20</button>
-          </div>
-          <div class="flex justify-center gap-5 mb-4">
-            <div class="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold bg-green-500">35/100</div>
-            <div class="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold bg-red-500">65/100</div>
-          </div>
-        </div>
-      </div>
     </div>
+</div>
+
+
+<script>
+    let currentQuestion = 1;
+    const totalQuestions = {{ TongSoCau }};
+    
+    function showQuestion(questionNumber) {
+        document.querySelectorAll('.question-container').forEach(q => q.classList.remove('active'));
+        document.getElementById(`question-${questionNumber}`).classList.add('active');
+        updateNavButtons();
+    }
+    
+    function changeQuestion(delta) {
+        currentQuestion += delta;
+        if (currentQuestion < 1) currentQuestion = 1;
+        if (currentQuestion > totalQuestions) currentQuestion = totalQuestions;
+        showQuestion(currentQuestion);
+    }
+    
+    function updateNavButtons() {
+        document.getElementById('prevBtn').disabled = currentQuestion === 1;
+        document.getElementById('nextBtn').disabled = currentQuestion === totalQuestions;
+    }
+    
+    function scrollToQuestion(questionNumber) {
+        currentQuestion = questionNumber;
+        showQuestion(currentQuestion);
+    }
+    
+    // Initialize with the first question
+    document.addEventListener('DOMContentLoaded', () => showQuestion(1));
+    </script>
+    
+
 {% endblock %}

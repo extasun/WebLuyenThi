@@ -36,9 +36,8 @@ class KhoaHocNoiDung(models.Model):
         return self.tieu_de
 class CauHoi(models.Model):
     TRAC_NGHIEM = 'TN'
-    DUNG_SAI = 'DS'
+    DUNG_SAI = 'CB'
     TU_LUAN = 'TL'
-    KEO_THA = 'KT'
     TU_DUY_TOAN_HOC = 'TDTH'
     TU_DUY_DOC_HIEU = 'TDDH'
     TU_DUY_KHOA_HOC = 'TDKH'
@@ -46,7 +45,7 @@ class CauHoi(models.Model):
         (TRAC_NGHIEM, 'Trắc nghiệm'),
         (DUNG_SAI, 'Đúng sai'),
         (TU_LUAN, 'Tự luận'),
-        (KEO_THA, 'Kéo thả'),  # New choice
+
     ]
     PHAN_THI_CHOICES = [
         (TU_DUY_TOAN_HOC, 'Tư duy toán học'),
@@ -129,6 +128,6 @@ class BaiLam(models.Model):
     dap_an = models.ForeignKey(DapAn, on_delete=models.CASCADE)  # Link to DapAn model
     noi_dung_de = models.ForeignKey(NoiDungDe, on_delete=models.CASCADE, null=True)
     tinh_dung = models.BooleanField(default=False)
-    
+    answer_text = models.TextField(null=True, blank=True)
     def __str__(self):
         return self.noi_dung_de.cau_hoi.noi_dung

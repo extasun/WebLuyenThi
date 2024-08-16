@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,8 +43,8 @@ INSTALLED_APPS = [
     'User',
     'core',
     'compressor',
-    'DanhGiaTuDuy',
     'DanhGiaNangLuc',
+    'DanhGiaTuDuy.apps.DanhGiaTuDuyConfig',
 ]
 
 MIDDLEWARE = [
@@ -115,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
 

@@ -51,5 +51,6 @@ class BaiLam(models.Model):
     dap_an = models.ForeignKey(DapAn, on_delete=models.CASCADE)
     noi_dung_de = models.ForeignKey(NoiDungDe, on_delete=models.CASCADE, null=True)
     tinh_dung = models.BooleanField(default=False)
+    answer_text = models.TextField(null=True, blank=True)
     def __str__(self):
         return self.noi_dung_de.cau_hoi.noi_dung

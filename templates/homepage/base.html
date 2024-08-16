@@ -15,11 +15,11 @@
         <style type="text/css" id="enject"></style>
     </head>
     <body class="flex flex-col min-h-screen">
-        {% comment %} <header class="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
+        <header class="fixed top-0 left-0 w-full z-50 bg-white shadow-md h-16">
             {% include 'homepage/header.html' %}
-        </header> {% endcomment %}
-        <main class="flex-grow mt-16 flex">
-            <div class="container mx-auto flex-grow">
+        </header>
+        <main class="flex-grow mt-16">
+            <div class="container mx-auto">
                 {% block content %}
                 {% endblock content %}
             </div>
