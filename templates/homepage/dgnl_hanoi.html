@@ -1,5 +1,5 @@
-{% extends 'homepage/base.html' %} 
-{% block content %} 
+{% extends 'homepage/base.html' %}
+{% block content %}
 {% load static %}
 
 <style>
@@ -7,8 +7,9 @@
         box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.2);
     }
 </style>
-<div class="grid grid-cols-4 gap-4 items-start mb-12 p-4 ml-12 mr-12 ">
-    {% for dethi in listDeThiDGTD %}
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+    {% for dethi in listDeThiDGNL %}
     <div class="bg-white rounded-3xl custom-shadow p-6 flex flex-col">
         <div class="flex justify-between items-start mb-4">
             <h2 class="text-lg font-bold">{{ dethi.ten_de_thi }}</h2>
@@ -22,12 +23,12 @@
             <span>Số câu hỏi: {{ dethi.noidungde_set.count }}</span>
             <span>Thời gian thi: {{ dethi.thoi_gian_thi }}</span>
         </div>
-        <a href="{% url 'DanhGiaTuDuy:dgtd_id' idde=dethi.id %}" class="mt-auto">
+        <a href="{% url 'DGNLHaNoi:select_subjects' idde=dethi.id %}" class="mt-auto">
             <button class="w-full py-2 px-4 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition-colors duration-200">
                 {% if dethi.id in thi_da_thi_ids %}
                     Thi lại
                 {% else %}
-                    Thi
+                    Thi thử
                 {% endif %}
             </button>
         </a>

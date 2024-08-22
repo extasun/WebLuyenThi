@@ -25,4 +25,5 @@ urlpatterns = [
     path('luyentap', include('LuyenTap.urls')),
     path('dgtd/', include('DanhGiaTuDuy.urls')),
     path('dgnl/', include('DanhGiaNangLuc.urls')),
+    path('dgnl_hn/', include('DGNLHaNoi.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

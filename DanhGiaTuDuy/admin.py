@@ -74,8 +74,8 @@ class DeThiAdmin(admin.ModelAdmin):
     actions_selection_counter = True
     actions_on_bottom = False
     actions_on_top = True
-    fields = ('ten_de_thi', 'loai_de', 'doc_hieu_noi_dung', 'thoi_gian_thi')
-    list_display = ['id', 'ten_de_thi', 'loai_de', 'doc_hieu_noi_dung', 'thoi_gian_thi']
+    fields = ('ten_de_thi','ma_de', 'loai_de', 'doc_hieu_noi_dung', 'thoi_gian_thi')
+    list_display = ['id', 'ten_de_thi', 'ma_de', 'loai_de', 'doc_hieu_noi_dung', 'thoi_gian_thi']
     list_display_links = ['ten_de_thi']
     list_filter = ['ten_de_thi', 'thoi_gian_thi', 'loai_de', 'doc_hieu_noi_dung']
     search_fields = ['ten_de_thi']

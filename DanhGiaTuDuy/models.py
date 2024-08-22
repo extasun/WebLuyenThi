@@ -100,6 +100,7 @@ class DeThi(models.Model):
     ten_de_thi = models.CharField(max_length=255, null=False, blank=False)
     loai_de = models.CharField(max_length=50, choices=LOAI_DE_CHOICES, default=DANH_GIA_TU_DUY)
     thoi_gian_thi = models.DurationField(default=timezone.timedelta(minutes=30))
+    ma_de = models.CharField(max_length=50, unique=True, default=timezone.now)
     doc_hieu_noi_dung = models.ForeignKey(DocHieuNoiDung, null=True, blank=True, on_delete=models.CASCADE)
     
     def __str__(self):

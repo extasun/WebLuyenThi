@@ -1,24 +1,52 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from datetime import timedelta
 from django.utils import timezone
-from .models import DeThi, NoiDungDe, LuotThi, BaiLam, KhoaHocNoiDung
+from .models import DeThi, NoiDungDe, LuotThi, BaiLam
 from .models import CauHoi, DapAn
 from django.db.models import Q
-from django.utils import timezone
 from User.models import StudentUser
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
+import logging
 import re
-# Create your views here.
 class Thi(View):
     def get(self, request):
         return render(request, 'exam.html')
-class DGTD(LoginRequiredMixin, View):
+class DGNLSelectSubject(LoginRequiredMixin, View):
     login_url = '/Userlogin/'
-    
+
+    def get(self, request, idde):
+        de_thi = get_object_or_404(DeThi, id=idde)
+        subjects = CauHoi.SUBJECT_CHOICES
+        context = {
+            'de_thi': de_thi,
+            'subjects': subjects,
+        }
+        return render(request, 'select_subjects_hn.html', context)
+
+    def post(self, request, idde):
+        selected_subjects_keys = request.POST.getlist('mon_hoc')  # Lấy danh sách key từ form
+        selected_subjects = []
+
+        # Tạo danh sách tuples (key, value) từ selected_subjects_keys
+        for key in selected_subjects_keys:
+            for choice_key, choice_value in CauHoi.SUBJECT_CHOICES:
+                if key == choice_key:
+                    selected_subjects.append((key, choice_value))
+                    break
+
+        if len(selected_subjects) != 3:
+            return redirect('DGNLHaNoi:select_subjects', idde=idde)
+
+        request.session['selected_subjects'] = selected_subjects
+        return redirect('DGNLHaNoi:dgnl_id', idde=idde)
+
+class DGNL(LoginRequiredMixin, View):
+    login_url = '/Userlogin/'
+
     def get(self, request, idde=None):
         if idde is None:
             return render(request, 'exam.html')
@@ -28,25 +56,28 @@ class DGTD(LoginRequiredMixin, View):
             deThi = get_object_or_404(DeThi, id=idde)
             dict_cauhoi_list_dapan = dict()
             SetNoiDungDe = NoiDungDe.objects.filter(de_thi=deThi).order_by('thu_tu_cau')
-            khoa_hoc_noi_dung_list = KhoaHocNoiDung.objects.all()
+
+            # Lấy danh sách môn học đã chọn từ session
+            selected_subjects = request.session.get('selected_subjects', [])
+            
             for noiDungDe in SetNoiDungDe:
-                SetDapAn = DapAn.objects.filter(cauHoi=noiDungDe.cau_hoi)
-                list_dapAn = list(SetDapAn)
-                dict_cauhoi_list_dapan[noiDungDe] = list_dapAn
+                # Lọc câu hỏi theo môn học đã chọn
+                if noiDungDe.cau_hoi.subject in [subject[0] for subject in selected_subjects] or noiDungDe.cau_hoi.phan1 or noiDungDe.cau_hoi.phan2:
+                    SetDapAn = DapAn.objects.filter(cauHoi=noiDungDe.cau_hoi)
+                    list_dapAn = list(SetDapAn)
+                    dict_cauhoi_list_dapan[noiDungDe] = list_dapAn
 
             lenkeys = len(dict_cauhoi_list_dapan)
-            thoi_gian_thi = int(deThi.thoi_gian_thi.seconds)
+            thoi_gian_thi = int(deThi.thoi_gian_thi.total_seconds())
             content = {
                 'DeThi': deThi, 
                 'dictCHDA': dict_cauhoi_list_dapan,
                 'lenkeys': lenkeys,
                 'student': student,
                 'tthi': thoi_gian_thi,
-                'khoa_hoc_noi_dung_list': khoa_hoc_noi_dung_list,
+                'selected_subjects': selected_subjects,
             }
-            return render(request, 'dgtd.html', content)
-
-
+            return render(request, 'dgnl_hanoi.html', content)
 def SaveBai(luot_thi, dap_an, noi_dung_de, tinh_dung, answer_text=None):
     bai_lam = BaiLam.objects.create(
         luu_bai_thi=luot_thi,
@@ -74,7 +105,6 @@ class ChamThi(View):
             thoi_gian_hoan_thanh = de_thi.thoi_gian_thi - thoi_gian_con_lai
 
             SetNoiDungDe = NoiDungDe.objects.filter(de_thi=de_thi).order_by('thu_tu_cau')
-            
             for key, value in request.POST.items():
                 if key.startswith('answer_'):
                     parts = key.split('_')
@@ -200,9 +230,8 @@ class ChamThi(View):
             }
 
 
-            return render(request, 'danhgiatuduy_result.html', context)
+            return render(request, 'result_dgnl.html', context)
         return render(request, 'homepage/index.html')
-
     def parse_time(self, time_str):
         parts = time_str.split(':')
         if len(parts) == 2:

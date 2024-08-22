@@ -4,10 +4,24 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from User.models import StudentUser
+class DoanCauHoi(models.Model):
+    tieu_de = models.CharField(max_length=255, null=False, blank=False)
+    noi_dung = models.TextField()
+    anh = models.ImageField(upload_to='doancauhoi_images/', null=True, blank=True)
+    
+    def dh_photo(self):
+        if self.anh:
+            return mark_safe('<img src="{}" width="100" />'.format(self.anh.url))
+        return ''
+
+    dh_photo.short_description = 'Image'
+    dh_photo.allow_tags = True
+    
+    def __str__(self):
+        return self.tieu_de
 class CauHoi(models.Model):
-    LANGUAGE_CHOICES = (
-        ('vi', 'Tiếng Việt'),
-        ('en', 'Tiếng Anh'),
+    PHAN1_CHOICES = (
+        ('p1', 'Toán học và xử lý số liệu'),
     )
     SUBJECT_CHOICES = (
         ('ly', 'Vật Lý'),
@@ -15,17 +29,14 @@ class CauHoi(models.Model):
         ('sinh', 'Sinh Học'),
         ('su', 'Lịch Sử'),
         ('dia', 'Địa Lý'),
-        ('gdcd', 'Giáo dục kinh tế và pháp luật'),
     )
     LOAI_CAU_HOI_CHOICES = [
         ('TN', 'Trắc nghiệm'),
         ('CB', 'Đúng sai'),
         ('TL', 'Tự luận'),
     ]
-    PHAN_2_CHOICES = [
-        ('TH', 'Toán học'),
-        ('TDLG', 'Tư duy logic'),
-        ('PTSL', 'Phân tích số liệu'),
+    PHAN2_CHOICES = [
+        ('p2', 'Văn học và ngôn ngữ'),
     ]
     tieu_de = models.CharField(max_length=255, null=False, blank=False)
     noi_dung = models.TextField()
@@ -34,9 +45,9 @@ class CauHoi(models.Model):
         choices=LOAI_CAU_HOI_CHOICES,
         default='TN',
     )
-    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES, blank=True, null=True)
+    phan1 = models.CharField(max_length=2, choices=PHAN1_CHOICES, blank=True, null=True)
     subject = models.CharField(max_length=4, choices=SUBJECT_CHOICES, blank=True, null=True)
-    phan_2 = models.CharField(max_length=4, choices=PHAN_2_CHOICES, blank=True, null=True)
+    phan2 = models.CharField(max_length=4, choices=PHAN2_CHOICES, blank=True, null=True)
     anh = models.ImageField(upload_to='cauhoi_images/', null=True, blank=True)
     cach_giai = models.TextField(default='')
     def ch_photo(self):
@@ -64,10 +75,10 @@ class DapAn(models.Model):
         return self.noi_dung
 class DeThi(models.Model):
     LOAI_DE_CHOICES = [
-         ('DGNL', 'Đánh giá năng lực HCM'),
+         ('DGNLHN', 'Đánh giá năng lực Hà Nội'),
     ]
     ten_de_thi = models.CharField(max_length=255, null=False, blank=False)
-    loai_de = models.CharField(max_length=50, choices=LOAI_DE_CHOICES, default='DGNL')
+    loai_de = models.CharField(max_length=50, choices=LOAI_DE_CHOICES, default='DGNLHN')
     ma_de = models.CharField(max_length=50, unique=True, default=timezone.now)
     thoi_gian_thi = models.DurationField(default=timezone.timedelta(minutes=30))    
     def __str__(self):
@@ -77,12 +88,12 @@ class NoiDungDe(models.Model):
     cau_hoi = models.ForeignKey(CauHoi, on_delete=models.CASCADE)
     diem_so = models.FloatField(validators=[MinValueValidator(0.01), MaxValueValidator(10.00)], default=1)
     thu_tu_cau = models.IntegerField(validators=[MinValueValidator(1)])
-
+    doan_cau_hoi = models.ForeignKey(DoanCauHoi, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return self.cau_hoi.noi_dung
 class LuotThi(models.Model):
     de_thi = models.ForeignKey(DeThi, on_delete=models.CASCADE)
-    nguoi_lam = models.ForeignKey(StudentUser, on_delete=models.CASCADE, related_name='danhgiannangluc_luotthi_set') 
+    nguoi_lam = models.ForeignKey(StudentUser, on_delete=models.CASCADE, related_name='dgnlhanoi_luotthi_set') 
     diem_so = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     thoi_diem_thi = models.DateTimeField(default=timezone.now)
     thoi_gian_hoan_thanh = models.DurationField(default=timezone.timedelta(minutes=0))

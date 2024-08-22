@@ -132,7 +132,6 @@
                 <input type="hidden" id="currentSectionInput" name="currentSectionInput">
                 {% csrf_token %} 
                 <div id="section1" class="bg-white relative w-full flex flex-col">
-                    <h2 class="text-xl font-bold mb-4">Phần 1: Ngôn ngữ</h2>
                     {% for noi_dung_de, dapans in dictCHDA.items %} 
                         {% if noi_dung_de.cau_hoi.language == 'vi' %} 
                         {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %} 
@@ -145,7 +144,6 @@
                         {% endfor %}
                 </div>
                 <div id="section2" class="bg-white relative w-full flex flex-col" style="display: none;">
-                    <h2 class="text-xl font-bold mb-4">Phần 2: Toán học, tư duy logic và phân tích số liệu</h2>
                     {% for noi_dung_de, dapans in dictCHDA.items %} 
                             {% if noi_dung_de.cau_hoi.phan_2 == 'TH' %} 
                             {% include 'question_load.html' with noi_dung_de=noi_dung_de dapans=dapans %} 
@@ -163,7 +161,6 @@
                         {% endfor %}
                 </div>
                 <div id="section3" class="bg-white relative w-full flex flex-col" style="display: none;">
-                    <h2 class="text-xl font-bold mb-4">Phần 3: Giải quyết vấn đề</h2>
                     {% for subject in selected_subjects %}
                             <span class="font-bold ml-2 text-2xl">3.{{ forloop.counter }}: {{ subject.1 }}</span>
                                 {% for noi_dung_de, dapans in dictCHDA.items %}
@@ -437,7 +434,7 @@
     };
 
     document.getElementById('cancelStartBtn').addEventListener('click', function() {
-        window.location.href = '{% url 'core:dgtd' %}'; // Điều hướng về trang chủ
+        window.location.href = '{% url 'core:dgnl' %}'; // Điều hướng về trang chủ
     });
 
     document.getElementById('confirmStartBtn').addEventListener('click', function() {
@@ -551,9 +548,9 @@
     }
     function getSectionTitle(sectionNumber) {
         switch(sectionNumber) {
-            case 1: return "Tư duy toán học";
-            case 2: return "Tư duy đọc hiểu";
-            case 3: return "Tư duy khoa học";
+            case 1: return "Ngôn ngữ";
+            case 2: return "Toán học, tư duy logic và phân tích số liệu";
+            case 3: return "Giải quyết vấn đề";
             default: return "";
         }
     }

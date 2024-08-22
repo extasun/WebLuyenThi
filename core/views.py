@@ -4,10 +4,12 @@ from MonHoc.models import MonHoc
 from LuyenTap.models import DeThi,CauHoi
 from DanhGiaTuDuy.models import DeThi as DGTD
 from DanhGiaNangLuc.models import DeThi as DGNL
+from DGNLHaNoi.models import DeThi as DGNLHaNoi
 from .forms import DeThiFilterForm
 from django.db.models import Count
 from LuyenTap.models import LuotThi
 from DanhGiaNangLuc.models import LuotThi as LuotThiDGNL
+from DGNLHaNoi.models import LuotThi as LuotThiDGNLHN
 from django.contrib.auth.decorators import login_required
 import logging
 
@@ -92,8 +94,8 @@ class DGNLHNView(View):
     def get(self, request):
         user = request.user
         logger = logging.getLogger(__name__)
-        queryset = DGNL.objects.filter(loai_de='DGNLHN')
-        thi_da_thi = LuotThiDGNL.objects.filter(nguoi_lam=user)
+        queryset = DGNLHaNoi.objects.filter(loai_de='DGNLHN')
+        thi_da_thi = LuotThiDGNLHN.objects.filter(nguoi_lam=user)
         
         thi_da_thi_ids = thi_da_thi.values_list('de_thi_id', flat=True)
         
@@ -106,5 +108,5 @@ class DGNLHNView(View):
             'thi_da_thi_ids': thi_da_thi_ids,
             'so_lan_thi_dict': so_lan_thi_dict,
         }
-        return render(request, 'homepage/dgnl.html', context)
+        return render(request, 'homepage/dgnl_hanoi.html', context)
      

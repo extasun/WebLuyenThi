@@ -1,15 +1,11 @@
-<!-- select_subjects.html -->
+
 {% extends 'homepage/base.html' %}
 
 {% block content %}
 <div class="container mx-auto py-8">
     <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4">Bài thi gồm có</h2>
-        <p>Phần 1: Ngôn ngữ (Tiếng Việt - Tiếng Anh)</p>
-        <p>Phần 2: Toán học, tư duy logic và phân tích số liệu</p>
-        <p>Phần 3: Giải quyết vấn đề</p>
-        <p class="mt-4 font-bold">Bạn hãy chọn 3 môn phía dưới:</p>
-        <form id="subjectForm" method="post" action="{% url 'DanhGiaNangLuc:select_subjects' idde=de_thi.id %}">
+        <p class="mt-4 font-bold">Bạn hãy chọn 3/5 môn phía dưới:</p>
+        <form id="subjectForm" method="post" action="{% url 'DGNLHaNoi:select_subjects' idde=de_thi.id %}">
             {% csrf_token %}
             <div class="mt-4">
                 {% for subject in subjects %}
