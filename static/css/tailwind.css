@@ -1877,11 +1877,6 @@ input:checked + .toggle-bg {
   border-color: rgb(75 85 99 / var(--tw-border-opacity));
 }
 
-.border-gray-800 {
-  --tw-border-opacity: 1;
-  border-color: rgb(31 41 55 / var(--tw-border-opacity));
-}
-
 .border-orange-500 {
   --tw-border-opacity: 1;
   border-color: rgb(255 90 31 / var(--tw-border-opacity));

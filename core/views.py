@@ -72,17 +72,20 @@ class DGTDView(View):
         }
         return render(request, 'homepage/dgtd.html', context)
 class DGNLView(View):
+    login_url = '/login/'  # Điều hướng đến trang đăng nhập nếu chưa đăng nhập
+    redirect_field_name = 'next'
     def get(self, request):
         user = request.user
         logger = logging.getLogger(__name__)
         queryset = DGNL.objects.filter(loai_de='DGNL')
-        thi_da_thi = LuotThiDGNL.objects.filter(nguoi_lam=user)
-        
-        thi_da_thi_ids = thi_da_thi.values_list('de_thi_id', flat=True)
-        
-        so_lan_thi = thi_da_thi.values('de_thi_id').annotate(count=Count('id')).order_by('de_thi_id')
-        
-        so_lan_thi_dict = {item['de_thi_id']: item['count'] for item in so_lan_thi}
+        if user.is_authenticated:
+            thi_da_thi = LuotThiDGNL.objects.filter(nguoi_lam=user)
+            thi_da_thi_ids = thi_da_thi.values_list('de_thi_id', flat=True)
+            so_lan_thi = thi_da_thi.values('de_thi_id').annotate(count=Count('id')).order_by('de_thi_id')
+            so_lan_thi_dict = {item['de_thi_id']: item['count'] for item in so_lan_thi}
+        else:
+            thi_da_thi_ids = []
+            so_lan_thi_dict = {}
         
         context = {
             'listDeThiDGNL': queryset,
@@ -91,17 +94,20 @@ class DGNLView(View):
         }
         return render(request, 'homepage/dgnl.html', context)
 class DGNLHNView(View):
+    login_url = '/login/'  # Điều hướng đến trang đăng nhập nếu chưa đăng nhập
+    redirect_field_name = 'next'
     def get(self, request):
         user = request.user
         logger = logging.getLogger(__name__)
         queryset = DGNLHaNoi.objects.filter(loai_de='DGNLHN')
-        thi_da_thi = LuotThiDGNLHN.objects.filter(nguoi_lam=user)
-        
-        thi_da_thi_ids = thi_da_thi.values_list('de_thi_id', flat=True)
-        
-        so_lan_thi = thi_da_thi.values('de_thi_id').annotate(count=Count('id')).order_by('de_thi_id')
-        
-        so_lan_thi_dict = {item['de_thi_id']: item['count'] for item in so_lan_thi}
+        if user.is_authenticated:
+            thi_da_thi = LuotThiDGNL.objects.filter(nguoi_lam=user)
+            thi_da_thi_ids = thi_da_thi.values_list('de_thi_id', flat=True)
+            so_lan_thi = thi_da_thi.values('de_thi_id').annotate(count=Count('id')).order_by('de_thi_id')
+            so_lan_thi_dict = {item['de_thi_id']: item['count'] for item in so_lan_thi}
+        else:
+            thi_da_thi_ids = []
+            so_lan_thi_dict = {}
         
         context = {
             'listDeThiDGNL': queryset,
